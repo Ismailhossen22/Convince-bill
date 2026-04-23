@@ -23,6 +23,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "input": "/assets/*",
+                "glob": "**/*",
+                "output": "assets"
               }
             ],
             "styles": [
