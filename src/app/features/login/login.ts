@@ -24,21 +24,23 @@ export class Login {
     required(schemaPath.password, { message: 'Password is required' });
   });
 
-  login(e: Event) {
+  login(e: Event, formEl: HTMLFormElement) {
     debugger
     e.preventDefault();
     this.markFormGroupTouched(this.loginForm);
     console.log(this.loginForm().value());
     console.log(this.userInfo());
-    if (this.loginForm().valid()) {
-      this.router.navigate(['/home'], { state: { userInfo: this.loginForm().value() } });
+    if (this.loginForm().invalid()) {
+      formEl.reportValidity();
+      return;
     }
+    this.router.navigate(['/home'], { state: { userInfo: this.loginForm().value() } });
   }
 
   private markFormGroupTouched(form: any) {
-    Object.values(form).forEach((control: any) => {
-      if (typeof control === 'function' && control().markAsTouched) {
-        control().markAsTouched();
+    Object.values(this.loginForm).forEach((field: any) => {
+      if (typeof field === 'function' && field().markAsTouched) {
+        field().markAsTouched();
       }
     });
   }

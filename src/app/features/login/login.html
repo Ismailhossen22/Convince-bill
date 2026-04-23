@@ -1,10 +1,10 @@
 <div class="min-h-screen bg-gray-100 flex items-center justify-center">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
-        <form (ngSubmit)="login($event)">
+        <form #loginFormEl (submit)="login($event, loginFormEl)" novalidate>
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold">Email Address
-                    <input type="email"
+                    <input type="email" #emailInput
                         class="{{loginForm.email().touched() && loginForm.email().invalid() ? 'border-red-300' : 'border-gray-300'}} shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         [formField]="loginForm.email">
                 </label>
@@ -18,7 +18,7 @@
             </div>
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-bold">Password
-                    <input type="password"
+                    <input type="password" #passwordInput
                         class="{{loginForm.password().touched() && loginForm.password().invalid() ? 'border-red-300' : 'border-gray-300'}} shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         [formField]="loginForm.password" aria-describedby="passwordHelp">
                 </label>
