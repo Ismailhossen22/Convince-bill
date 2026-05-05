@@ -1,12 +1,13 @@
 import { Routes } from '@angular/router';
-import { Sidebar } from './Conveyance/components/sidebar/sidebar';
-import { CreateBill } from './Conveyance/components/create-bill/create-bill';
-import { DraftBills } from './Conveyance/components/draft-bills/draft-bills';
-import { RejectedBills } from './Conveyance/components/rejected-bills/rejected-bills';
-import { BillTracking } from './Conveyance/components/bill-tracking/bill-tracking';
-import { ApprovalDashboard } from './Conveyance/components/approval-dashboard/approval-dashboard';
-import { ApprovalHistory } from './Conveyance/components/approval-history/approval-history';
-import { SuccessPage } from './Conveyance/components/success-page/success-page';
+import { Sidebar } from './pages/components/sidebar/sidebar';
+import { CreateBill } from './pages/components/create-bill/create-bill';
+import { DraftBills } from './pages/components/draft-bills/draft-bills';
+import { RejectedBills } from './pages/components/rejected-bills/rejected-bills';
+import { BillTracking } from './pages/components/bill-tracking/bill-tracking';
+import { ApprovalDashboard } from './pages/components/approval-dashboard/approval-dashboard';
+import { ApprovalHistory } from './pages/components/approval-history/approval-history';
+import { SuccessPage } from './pages/components/success-page/success-page';
+
 
 export const routes: Routes = [
     { path: 'login', loadComponent: () => import('./features/login/login').then(m => m.Login), pathMatch: 'full' },
