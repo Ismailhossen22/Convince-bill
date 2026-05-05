@@ -1,7 +1,8 @@
 // services/bill.service.ts
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Bill } from '../models/bill.mode';
+import { HttpClient } from '@angular/common/http';
 
 
 @Injectable({ providedIn: 'root' })
@@ -78,6 +79,22 @@ export class BillService {
     return this.billSignal();
 
   }
+ private readonly http = inject(HttpClient);
+  getUserData(userId: string) {
+    return this.http.get<any>(
+      `https://api.example.com/user/${userId}`
+    );
+  }
+
+
+
+
+
+
+
+
+
+
 }
 
 

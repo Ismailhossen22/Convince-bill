@@ -1,14 +1,11 @@
-
 <div class="max-w-6xl mx-auto px-4 py-6">
   <div class="px-6 py-5">
     <h2 class="text-2xl text-center font-semibold text-gray-800">Conveyance Bills</h2>
   </div>
 
-  <div [formGroup]="form">
+  <div >
     <div class="flex flex-row-reverse items-center justify-between mb-4">
-
-
-      <div class="flex gap-2 flex-col ">
+      <div class="flex gap-2 flex-col">
         <button
           class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
         >
@@ -21,70 +18,37 @@
         </button>
       </div>
 
-      <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div>
-          <label class="block text-sm font-medium text-gray-600 mb-1">Name</label>
-          <input
-            formControlName="name"
-            readonly
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
-          />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600 mb-1">Department</label>
-          <input
-            formControlName="department"
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600 mb-1">Date From</label>
-          <input
-            type="date"
-            formControlName="dateFrom"
-            (change)="checkHoliday($event.target.value)"
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-600 mb-1">Date To</label>
-          <input
-            type="date"
-            formControlName="dateTo"
-            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-      </div> -->
+      @if(userInfo()) {
+        <div class="border border-gray-200 rounded-lg overflow-hidden w-3/5">
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-gray-300">
+              <tr>
+                <td class="px-4 py-3 font-medium text-gray-600 w-1/2">{{userInfo()!.name}}</td>
+                <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
+                  Md. Aftahi Islam Nayan
+                </td>
+              </tr>
 
-      <div class="border border-gray-200 rounded-lg overflow-hidden w-3/5">
-        <table class="w-full text-sm">
-          <tbody class="divide-y divide-gray-300">
-            <tr>
-              <td class="px-4 py-3 font-medium text-gray-600 w-1/2">Name</td>
-              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                Md. Aftahi Islam Nayan
-              </td>
-            </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium text-gray-600">Contact No</td>
+                <td class="px-4 py-3 text-gray-800 border-l border-gray-300">{{userInfo()!.contacNo}}</td>
+              </tr>
 
-            <tr>
-              <td class="px-4 py-3 font-medium text-gray-600">Contact No</td>
-              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">01777848471</td>
-            </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium text-gray-600">Date of Submission</td>
+                <td class="px-4 py-3 text-gray-800 border-l border-gray-300">{{userInfo()!.submitDate}}</td>
+              </tr>
 
-            <tr>
-              <td class="px-4 py-3 font-medium text-gray-600">Date of Submission</td>
-              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">01/18/2026</td>
-            </tr>
-
-            <tr>
-              <td class="px-4 py-3 font-medium text-gray-600">Supervisor's Designation</td>
-              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                Director, Technology and Product
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+              <tr>
+                <td class="px-4 py-3 font-medium text-gray-600">Supervisor's Designation</td>
+                <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
+                  {{userInfo()!.designation}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      }
     </div>
 
     <!-- Holiday Warning -->

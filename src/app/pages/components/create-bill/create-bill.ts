@@ -4,7 +4,7 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { BillService } from '../../services/bill.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Bill, BillItem } from '../../models/bill.mode';
+import { Bill, UserData, } from '../../models/bill.mode';
 
 
 @Component({
@@ -14,49 +14,51 @@ import { Bill, BillItem } from '../../models/bill.mode';
   styleUrl: './create-bill.css',
 })
 export class CreateBill implements OnInit {
-
-  
-  private readonly fb          = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
   private readonly billService = inject(BillService);
-  private readonly router      = inject(Router);
+  private readonly router = inject(Router);
+  isLoading = signal<boolean>(false);
+  userInfo = signal<UserData | null>(null);
+  usrform!: FormGroup;
 
-  form!: FormGroup;
+  billItemsArray: FormArray = this.fb.array([this.createItem()]);
 
-  // ✅ Signals
-  isHoliday    = signal<boolean>(false);
-  isEditMode   = signal<boolean>(false);
-  editingBill  = signal<Bill | null>(null);
+
+  isHoliday = signal<boolean>(false);
+  isEditMode = signal<boolean>(false);
+  editingBill = signal<Bill | null>(null);
   isSubmitting = signal<boolean>(false);
 
-  // ✅ Items signal — table bind এর জন্য
-  itemsSignal  = signal<any[]>([]);
 
-  // ✅ Computed — total auto calculate
-  totalAmount  = computed(() =>
+  itemsSignal = signal<any[]>([]);
+
+  //  Computed — total auto calculate
+  totalAmount = computed(() =>
     this.itemsSignal().reduce(
       (sum, item) => sum + (+item.amount || 0), 0
     )
   );
 
   transportModes = ['CNG', 'Uber', 'Bus', 'Own Vehicle'];
-  purposes       = ['Client Meeting', 'Office Work', 'Field Visit'];
+  purposes = ['Client Meeting', 'Office Work', 'Field Visit'];
 
   constructor() {
-    this.buildForm();
+    this.UserForm();
   }
 
   ngOnInit(): void {
-    
+    this.UserForm();
+    this.loadFromApi();
     const navigation = this.router.getCurrentNavigation();
     const bill = navigation?.extras?.state?.['bill'] as Bill;
 
     if (bill) {
       this.isEditMode.set(true);
       this.editingBill.set(bill);
-     // this.loadBillData(bill);
+      // this.loadBillData(bill);
     }
 
-    // ✅ FormArray change হলে signal update
+    //  FormArray change হলে signal update
     this.items.valueChanges.subscribe(val => {
       this.itemsSignal.set(val);
     });
@@ -65,38 +67,57 @@ export class CreateBill implements OnInit {
     this.itemsSignal.set(this.items.value);
   }
 
-  // ✅ Form build
-  private buildForm(): void {
-    this.form = this.fb.group({
-      name:        ['Md. Afsob Islam Nayan'],
-      department:  ['ICT Dept.', Validators.required],
-      designation: [''],
-      dateFrom:    ['', Validators.required],
-      dateTo:      ['', Validators.required],
-      items:       this.fb.array([this.createItem()])
-    });
-  }
 
-  // ✅ FormArray getter
+private UserForm(): void {
+  this.usrform = this.fb.group({
+    name:        ['Md. Afsob Islam Nayan'],
+    contacNo:    ['01712345678'],
+    designation: ['Director Technology and Product'],
+    submitDate:  [new Date().toLocaleDateString('en-GB')], // ✅
+  });
+}
+
+private loadFromApi(): void {
+  this.isLoading.set(true);
+
+  this.billService.getUserData('123').subscribe({
+    next: (data) => {
+      this.usrform.patchValue({
+        name:        data.name,
+        contacNo:    data.contacNo,
+        designation: data.designation,
+        submitDate:  data.submitDate  
+      });
+
+      this.userInfo.set(data);
+      this.isLoading.set(false);
+    },
+    error: (err) => {
+      console.error('Error:', err);
+      this.isLoading.set(false);
+    }
+  });
+}
+
   get items(): FormArray {
-    return this.form.get('items') as FormArray;
+    return this.billItemsArray;
   }
 
   get itemGroups(): FormGroup[] {
-    return this.items.controls as FormGroup[];
+    return this.billItemsArray.controls as FormGroup[];
   }
 
-  // ✅ Item তৈরি
+
   createItem(): FormGroup {
     return this.fb.group({
-      visitedDate:     ['', Validators.required],
-      from:            ['', Validators.required],
-      to:              ['', Validators.required],
-      distance:        [0],
-      globalCompany:   [''],
-      purpose:         [''],
+      visitedDate: ['', Validators.required],
+      from: ['', Validators.required],
+      to: ['', Validators.required],
+      distance: [0],
+      globalCompany: [''],
+      purpose: [''],
       modeOfTransport: [''],
-      amount:          [0, Validators.required]
+      amount: [0, Validators.required]
     });
   }
 
@@ -112,8 +133,8 @@ export class CreateBill implements OnInit {
 
   // ✅ Holiday check — signal দিয়ে
   checkHoliday(event: Event): void {
-    const date  = (event.target as HTMLInputElement).value;
-    const day   = new Date(date).getDay();
+    const date = (event.target as HTMLInputElement).value;
+    const day = new Date(date).getDay();
     this.isHoliday.set(day === 5 || day === 6);
   }
 
@@ -138,13 +159,13 @@ export class CreateBill implements OnInit {
   // ✅ Build bill object — DRY
   private buildBillPayload(status: 'draft' | 'pending'): Bill {
     return {
-      ...this.form.value,
-      totalAmount:      this.totalAmount(), // signal call
+      ...this.billItemsArray.value,
+      totalAmount: this.totalAmount(), // signal call
       status,
-      submissionDate:   new Date().toISOString(),
-      travelDays:       this.items.length,
-      dateRange:        `${this.form.value.dateFrom} -
-                         ${this.form.value.dateTo}`
+      submissionDate: new Date().toISOString(),
+      travelDays: this.items.length,
+      dateRange: `${this.billItemsArray.value.dateFrom} -  ${this.billItemsArray.value.dateTo}`
+
     };
   }
 
@@ -168,8 +189,8 @@ export class CreateBill implements OnInit {
 
   // ✅ Submit to Supervisor
   submitToSupervisor(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+    if (this.billItemsArray.invalid) {
+      this.billItemsArray.markAllAsTouched();
       return;
     }
 
@@ -192,7 +213,7 @@ export class CreateBill implements OnInit {
 
   // ✅ Form reset
   resetForm(): void {
-    this.form.reset();
+    this.billItemsArray.reset();
     this.items.clear();
     this.items.push(this.createItem());
     this.itemsSignal.set(this.items.value);
