@@ -1,0 +1,265 @@
+<!-- <div class="min-h-screen flex justify-center items-start pt-10 pb-10">
+  <div class="w-full max-w-6xl mx-4">
+    <div class="bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-800 text-center">Conveyance Bills</h3>
+        <p class="employee-name text-sm text-gray-500 text-center mt-1"></p>
+      </div>
+
+      <table class="table-auto">
+        <thead class="bg-gray-300">
+          <tr>
+            <th>Song</th>
+            <th>Artist</th>
+            <th>Year</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>The Sliding Mr. Bones</td>
+            <td>Malcolm Lockyer</td>
+            <td>1961</td>
+          </tr>
+          <tr>
+            <td>Witchy Woman</td>
+            <td>The Eagles</td>
+            <td>1972</td>
+          </tr>
+          <tr>
+            <td>Shining Star</td>
+            <td>Earth, Wind, and Fire</td>
+            <td>1975</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div> -->
+
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <div class="px-6 py-5">
+    <h2 class="text-2xl text-center font-semibold text-gray-800">Conveyance Bills</h2>
+  </div>
+
+  <div [formGroup]="form">
+    <div class="flex flex-row-reverse items-center justify-between mb-4">
+
+
+      <div class="flex gap-2 flex-col ">
+        <button
+          class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+        >
+          Attendance Report
+        </button>
+        <button
+          class="px-4 py-2 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
+        >
+          Holiday List
+        </button>
+      </div>
+
+      <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Name</label>
+          <input
+            formControlName="name"
+            readonly
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Department</label>
+          <input
+            formControlName="department"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Date From</label>
+          <input
+            type="date"
+            formControlName="dateFrom"
+            (change)="checkHoliday($event.target.value)"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Date To</label>
+          <input
+            type="date"
+            formControlName="dateTo"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div> -->
+
+      <div class="border border-gray-200 rounded-lg overflow-hidden w-3/5">
+        <table class="w-full text-sm">
+          <tbody class="divide-y divide-gray-300">
+            <tr>
+              <td class="px-4 py-3 font-medium text-gray-600 w-1/2">Name</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
+                Md. Aftahi Islam Nayan
+              </td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3 font-medium text-gray-600">Contact No</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">01777848471</td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3 font-medium text-gray-600">Date of Submission</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">01/18/2026</td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3 font-medium text-gray-600">Supervisor's Designation</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
+                Director, Technology and Product
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Holiday Warning -->
+    <div
+      *ngIf="isHoliday"
+      class="mb-4 px-4 py-3 bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-lg text-sm"
+    >
+      ⚠️ Selected date falls on a Holiday/Weekend!
+    </div>
+
+    <!-- Employee Info -->
+
+    <!-- Bill Items Table -->
+    <div class="overflow-x-auto rounded-lg border border-gray-200 mb-4">
+      <table class="w-full text-sm text-left">
+        <thead class="bg-gray-100 text-gray-600 font-medium">
+          <tr>
+            <th class="px-3 py-3 whitespace-nowrap">SL</th>
+            <th class="px-3 py-3 whitespace-nowrap">Visited Date</th>
+            <th class="px-3 py-3 whitespace-nowrap">From</th>
+            <th class="px-3 py-3 whitespace-nowrap">To</th>
+            <th class="px-3 py-3 whitespace-nowrap">Distance</th>
+            <th class="px-3 py-3 whitespace-nowrap">Global Company</th>
+            <th class="px-3 py-3 whitespace-nowrap">Purpose</th>
+            <th class="px-3 py-3 whitespace-nowrap">Mode of Transport</th>
+            <th class="px-3 py-3 whitespace-nowrap">Amount</th>
+            <th class="px-3 py-3 whitespace-nowrap">Action</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="items" class="divide-y divide-gray-200">
+          <tr
+            *ngFor="let item of items.controls; let i = index"
+            [formGroupName]="i"
+            class="bg-white hover:bg-gray-50"
+          >
+            <td class="px-3 py-2 text-gray-500">{{ i + 1 }}</td>
+            <td class="px-3 py-2">
+              <input
+                type="date"
+                formControlName="visitedDate"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <input
+                formControlName="from"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <input
+                formControlName="to"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <input
+                type="number"
+                formControlName="distance"
+                class="w-20 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <input
+                formControlName="globalCompany"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <select
+                formControlName="purpose"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option *ngFor="let p of purposes">{{ p }}</option>
+              </select>
+            </td>
+            <td class="px-3 py-2">
+              <select
+                formControlName="modeOfTransport"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option *ngFor="let m of transportModes">{{ m }}</option>
+              </select>
+            </td>
+            <td class="px-3 py-2">
+              <input
+                type="number"
+                formControlName="amount"
+                class="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </td>
+            <td class="px-3 py-2">
+              <button
+                *ngIf="items.length > 1"
+                (click)="removeRow(i)"
+                class="text-red-500 hover:text-red-700 transition text-base"
+              >
+                🗑️
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot class="bg-gray-50">
+          <tr>
+            <td colspan="8" class="px-3 py-3 text-right text-sm font-semibold text-gray-700">
+              Total:
+            </td>
+            <td class="px-3 py-3 text-sm font-bold text-gray-800">
+              {{ totalAmount }}
+            </td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Add Row -->
+    <button
+      (click)="addRow()"
+      class="mb-6 px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+    >
+      + Add Row
+    </button>
+
+    <!-- Bottom Buttons -->
+    <div class="flex justify-end gap-3">
+      <button
+        (click)="saveDraft()"
+        class="px-5 py-2 text-sm border border-gray-400 text-gray-700 rounded-lg hover:bg-gray-100 transition"
+      >
+        Save to Draft
+      </button>
+      <button
+        (click)="submitToSupervisor()"
+        class="px-5 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+      >
+        Submit to the Supervisor
+      </button>
+    </div>
+  </div>
+</div>
