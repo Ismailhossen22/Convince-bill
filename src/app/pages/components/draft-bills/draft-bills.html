@@ -1,0 +1,83 @@
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <div class="px-6 py-5 flex items-center justify-center mb-4">
+    <h2
+      class="w-2/5 py-2 rounded-2xl bg-[#c0bfb3] text-2xl text-center font-semibold text-gray-800"
+    >
+      Draft Bills
+    </h2>
+  </div>
+
+  <div>
+    <div class="flex flex-col items-center justify-between mb-4">
+      <!-- Bill Items Table -->
+      <div class="rounded-lg border border-gray-200 mb-4">
+        <table class="w-full text-sm text-left table-auto border border-gray-400">
+          <thead class="bg-gray-100 text-gray-600 font-medium">
+            <tr>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">SL</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Visited Date</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">From</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">To</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Vsited Company</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Purpose</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Mode of Transport</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Amount</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Action</th>
+            </tr>
+          </thead>
+
+          <tbody formArrayName="items">
+            @for (bill of draftBills(); track bill.id) {
+              @for (item of bill.items; track $index; let i = $index) {
+                <tr class="bg-white hover:bg-gray-50">
+                  <td class="px-3 py-2 text-gray-500 border border-gray-400">{{ i + 1 }}</td>
+
+                  <td class="px-3 py-2 border border-gray-400">{{ item.visitedDate }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.toLocation }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.fromLocation }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.companyName }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.purpose }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.transportMode }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.amount }}</td>
+
+                  <td class="px-3 py-2 border border-gray-400">
+                    <button (click)="editBill(bill)">
+                      <img class="h-8" src="images/Edit.svg" alt="Edit" />
+                    </button>
+                    <button>
+                      <img class="h-8" src="images/Trash.svg" alt="Delete" />
+                    </button>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+
+          <tfoot class="bg-gray-50">
+            <tr>
+              <td
+                colspan="7"
+                class="px-3 py-3 text-right text-sm font-semibold text-gray-700 border border-gray-400"
+              >
+                Sub Total:
+              </td>
+
+              <td class="px-3 py-3 text-sm font-bold text-gray-800 border border-gray-400">
+                {{ calculateTotalAmount() }}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Bottom Buttons -->
+      <div class="flex justify-end gap-3">
+        <button
+          class="px-5 py-2 text-base bg-[#67D5B2] text-white rounded-lg hover:bg-[#5aa891] transition"
+        >
+          Submit to the Supervisor
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

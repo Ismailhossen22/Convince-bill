@@ -34,7 +34,7 @@ export class Login {
       formEl.reportValidity();
       return;
     }
-    this.router.navigate(['/home'], { state: { userInfo: this.loginForm().value() } });
+    this.router.navigate(['/navbar'], { state: { userInfo: this.loginForm().value() } });
   }
 
   private markFormGroupTouched(form: any) {
@@ -43,5 +43,6 @@ export class Login {
         field().markAsTouched();
       }
     });
+    
   }
 }
