@@ -1,40 +1,39 @@
 
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, computed, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BillService } from '../../services/bill.service';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { Bill, UserData, } from '../../models/bill.mode';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Bill, BillItem, UserData, } from '../../models/bill.mode';
+import { ShortDatePipe } from '../../pipes/short-data.pipe';
+import { it } from 'node:test';
 
 
 @Component({
   selector: 'app-create-bill',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ShortDatePipe],
   templateUrl: './create-bill.html',
   styleUrl: './create-bill.css',
 })
 export class CreateBill implements OnInit {
+  private platformId = inject(PLATFORM_ID);
   private readonly fb = inject(FormBuilder);
   private readonly billService = inject(BillService);
   private readonly router = inject(Router);
   isLoading = signal<boolean>(false);
   userInfo = signal<UserData | null>(null);
   usrform!: FormGroup;
-
-  billItemsArray: FormArray = this.fb.array([this.createItem()]);
-
-
   isHoliday = signal<boolean>(false);
   isEditMode = signal<boolean>(false);
   editingBill = signal<Bill | null>(null);
   isSubmitting = signal<boolean>(false);
 
 
-  itemsSignal = signal<any[]>([]);
+  itemSignal = signal<any[]>([]);
 
-  //  Computed — total auto calculate
+
   totalAmount = computed(() =>
-    this.itemsSignal().reduce(
+    this.itemSignal().reduce(
       (sum, item) => sum + (+item.amount || 0), 0
     )
   );
@@ -42,84 +41,92 @@ export class CreateBill implements OnInit {
   transportModes = ['CNG', 'Uber', 'Bus', 'Own Vehicle'];
   purposes = ['Client Meeting', 'Office Work', 'Field Visit'];
 
+  private bill: Bill | null = null;
   constructor() {
     this.UserForm();
+
+    const navigation = this.router.currentNavigation();
+    this.bill = navigation?.extras?.state?.['bill'] as Bill;
   }
 
   ngOnInit(): void {
     this.UserForm();
-    this.loadFromApi();
-    const navigation = this.router.getCurrentNavigation();
-    const bill = navigation?.extras?.state?.['bill'] as Bill;
 
-    if (bill) {
+    debugger;
+    if (this.bill) {
       this.isEditMode.set(true);
-      this.editingBill.set(bill);
-      // this.loadBillData(bill);
+      this.editingBill.set(this.bill);
+      this.loadBillData(this.bill);
+      
     }
 
-    //  FormArray change হলে signal update
+    this.itemSignal.set(this.items.value);
     this.items.valueChanges.subscribe(val => {
-      this.itemsSignal.set(val);
+      this.itemSignal.set(val);
     });
 
-    // Initial set
-    this.itemsSignal.set(this.items.value);
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadFromApi();
+    }
+
   }
 
 
-private UserForm(): void {
-  this.usrform = this.fb.group({
-    name:        ['Md. Afsob Islam Nayan'],
-    contacNo:    ['01712345678'],
-    designation: ['Director Technology and Product'],
-    submitDate:  [new Date().toLocaleDateString('en-GB')], // ✅
+  private UserForm(): void {
+    this.usrform = this.fb.group({
+      name: ['Md. Afsob Islam Nayan'],
+      contacNo: ['01712345678'],
+      designation: ['Director Technology and Product'],
+      submitDate: [new Date().toLocaleDateString('en-GB')],
+    });
+    this.userInfo.set(this.usrform.value);
+  }
+
+  private loadFromApi(): void {
+    this.isLoading.set(true);
+
+    this.billService.getUserData('123').subscribe({
+      next: (data) => {
+        this.usrform.patchValue({
+          name: data.name,
+          contacNo: data.contacNo,
+          designation: data.designation,
+          submitDate: data.submitDate
+        });
+
+        this.userInfo.set(this.usrform.value);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+
+  bilform: FormGroup = this.fb.group({
+    billitem: this.fb.array([this.createItem()])
   });
-}
-
-private loadFromApi(): void {
-  this.isLoading.set(true);
-
-  this.billService.getUserData('123').subscribe({
-    next: (data) => {
-      this.usrform.patchValue({
-        name:        data.name,
-        contacNo:    data.contacNo,
-        designation: data.designation,
-        submitDate:  data.submitDate  
-      });
-
-      this.userInfo.set(data);
-      this.isLoading.set(false);
-    },
-    error: (err) => {
-      console.error('Error:', err);
-      this.isLoading.set(false);
-    }
-  });
-}
 
   get items(): FormArray {
-    return this.billItemsArray;
-  }
-
-  get itemGroups(): FormGroup[] {
-    return this.billItemsArray.controls as FormGroup[];
+    return this.bilform.get('billitem') as FormArray;
   }
 
 
   createItem(): FormGroup {
     return this.fb.group({
-      visitedDate: ['', Validators.required],
-      from: ['', Validators.required],
-      to: ['', Validators.required],
-      distance: [0],
-      globalCompany: [''],
+      visitedDate: ['', [Validators.required, this.maxOneMonthValidator()]],
+      fromLocation: ['', Validators.required],
+      toLocation: ['', Validators.required],
+      companyName: [''],
       purpose: [''],
-      modeOfTransport: [''],
+      transportMode: [''],
       amount: [0, Validators.required]
     });
   }
+
+
 
   addRow(): void {
     this.items.push(this.createItem());
@@ -128,6 +135,7 @@ private loadFromApi(): void {
   removeRow(i: number): void {
     if (this.items.length > 1) {
       this.items.removeAt(i);
+
     }
   }
 
@@ -138,59 +146,45 @@ private loadFromApi(): void {
     this.isHoliday.set(day === 5 || day === 6);
   }
 
+
   // ✅ Draft থেকে এলে form এ data বসানো
-  // private loadBillData(bill: Bill): void {
-  //   this.form.patchValue({
-  //     name:        bill.name,
-  //     department:  bill.department,
-  //     designation: bill.designation,
-  //     dateFrom:    bill.dateFrom,
-  //     dateTo:      bill.dateTo
-  //   });
 
-  //   this.items.clear();
-  //   bill.items?.forEach(item => {
-  //     this.items.push(this.fb.group(item));
-  //   });
+  private loadBillData(bill: Bill): void {
+    this.items.clear();
+    bill.items?.forEach(item => {
+      this.items.push(this.fb.group(item));
+    });
+    this.itemSignal.set(this.items.value);
 
-  //   this.itemsSignal.set(this.items.value);
-  // }
+  }
 
   // ✅ Build bill object — DRY
   private buildBillPayload(status: 'draft' | 'pending'): Bill {
+    const items = this.items.value
     return {
-      ...this.billItemsArray.value,
-      totalAmount: this.totalAmount(), // signal call
-      status,
-      submissionDate: new Date().toISOString(),
-      travelDays: this.items.length,
-      dateRange: `${this.billItemsArray.value.dateFrom} -  ${this.billItemsArray.value.dateTo}`
+      items: items,
+      totalAmount: this.totalAmount(),
+      status
 
     };
   }
 
   // ✅ Save Draft
   saveDraft(): void {
-    const payload = this.buildBillPayload('draft');
-
-    if (this.isEditMode() && this.editingBill()) {
-      // Edit mode — update করা
-      this.billService.updateBill({
-        ...payload,
-        id: this.editingBill()!.id
-      });
-    } else {
-      // New draft
-      this.billService.saveDraft(payload);
+    if (this.bilform.invalid) {
+      this.bilform.markAllAsTouched();
+      return;
     }
 
+    const payload = this.buildBillPayload('draft');
+    this.billService.saveDraft(payload);
     this.router.navigate(['/draft-bills']);
   }
 
   // ✅ Submit to Supervisor
   submitToSupervisor(): void {
-    if (this.billItemsArray.invalid) {
-      this.billItemsArray.markAllAsTouched();
+    if (this.items.invalid) {
+      this.items.markAllAsTouched();
       return;
     }
 
@@ -211,12 +205,65 @@ private loadFromApi(): void {
     this.router.navigate(['/success']);
   }
 
+
+  formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const day = date.getDate();
+    const month = date.toLocaleString('en', { month: 'short' }); // Jan, Feb...
+    return `${day}-${month}`;
+  }
+
+  hasError(index: number, controlName: string, error: string): boolean {
+    const control = this.items.at(index).get(controlName);
+
+    return !!(control?.hasError(error) && (control?.touched || control?.dirty));
+  }
+
+  getControl(index: number, controlName: string): string {
+    return this.items.at(index).get(controlName)?.value ?? '';
+  }
+
+
+  clearDate(index: number): void {
+    this.items.at(index).get('visitedDate')?.setValue('');
+
+
+
+  }
+
+
+  maxOneMonthValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+
+      const selected = new Date(control.value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const maxDate = new Date();
+      maxDate.setMonth(today.getMonth() + 1);
+      maxDate.setHours(0, 0, 0, 0);
+
+      if (selected > today) {
+        return { futureDate: true };
+      }
+
+      if (selected < new Date(today.getFullYear(), today.getMonth() - 1, today.getDate())) {
+        return { maxOneMonth: true };
+      }
+
+      return null;
+    };
+  }
+
+
   // ✅ Form reset
   resetForm(): void {
-    this.billItemsArray.reset();
+    this.items.reset();
     this.items.clear();
     this.items.push(this.createItem());
-    this.itemsSignal.set(this.items.value);
+    this.itemSignal.set(this.items.value);
     this.isHoliday.set(false);
     this.isEditMode.set(false);
     this.editingBill.set(null);

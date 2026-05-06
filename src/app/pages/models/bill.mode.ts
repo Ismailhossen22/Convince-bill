@@ -2,13 +2,18 @@
 export interface BillItem {
   sl: number;
   visitedDate: string;
-  from: string;
-  to: string;
-  distance: number;
-  globalCompany: string;
+  toLocation: string;
+  fromLocation: string;
   purpose: string;
-  modeOfTransport: string;
+  transportMode: string;
+  companyName: string;
+  userId: string;
   amount: number;
+  status: number;
+  convID: string;
+  userRole: string | null;
+
+
 }
 
 export interface UserData {
@@ -21,18 +26,24 @@ export interface UserData {
 }
 export interface Bill {
   id?: string;
-  billNo?: string;
-  employeeId: string;
-  employeeName: string;
-  designation: string;
-  department: string;
-  submissionDate: string;
-  travelDays: number;
-  dateRange: string;
   totalAmount: number;
   status: 'draft' | 'pending' | 'approved' |
   'rejected' | 'in_review';
   items: BillItem[];
   comments?: string;
   rejectionReason?: string;
+}
+
+export interface IConvenceBill {
+  visitedDate: string;
+  toLocation: string;
+  fromLocation: string;
+  purpose: string;
+  transportMode: string;
+  companyName: string;
+  userId: string;
+  amount: string;
+  status: number;
+  convID: string;
+  userRole: string | null;
 }

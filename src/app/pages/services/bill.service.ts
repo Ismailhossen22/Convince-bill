@@ -33,11 +33,10 @@ export class BillService {
   }
 
 
+
   submitBill(bill: Bill) {
     bill.id = 'CB-' + Date.now();
-    bill.billNo = 'CB-2026-' + Math.floor(Math.random() * 1000);
     bill.status = 'pending';
-
     this.billSignal.update(bills => [...bills, bill]);
   }
 
@@ -79,7 +78,7 @@ export class BillService {
     return this.billSignal();
 
   }
- private readonly http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   getUserData(userId: string) {
     return this.http.get<any>(
       `https://api.example.com/user/${userId}`
