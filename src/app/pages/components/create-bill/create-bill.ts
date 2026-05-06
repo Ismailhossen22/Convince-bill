@@ -1,10 +1,11 @@
+import { BillStatus, IConvenceBill } from './../../models/bill.mode';
 
 import { Component, computed, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BillService } from '../../services/bill.service';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Bill, BillItem, UserData, } from '../../models/bill.mode';
+import { Bill, UserData, } from '../../models/bill.mode';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
 import { it } from 'node:test';
 
@@ -25,7 +26,7 @@ export class CreateBill implements OnInit {
   usrform!: FormGroup;
   isHoliday = signal<boolean>(false);
   isEditMode = signal<boolean>(false);
-  editingBill = signal<Bill | null>(null);
+  editingBill = signal<IConvenceBill | null>(null);
   isSubmitting = signal<boolean>(false);
 
 
@@ -46,7 +47,7 @@ export class CreateBill implements OnInit {
     this.UserForm();
 
     const navigation = this.router.currentNavigation();
-    this.bill = navigation?.extras?.state?.['bill'] as Bill;
+    this.bill = navigation?.extras?.state?.['bill'] as Bill || null;
   }
 
   ngOnInit(): void {
@@ -55,9 +56,9 @@ export class CreateBill implements OnInit {
     debugger;
     if (this.bill) {
       this.isEditMode.set(true);
-      this.editingBill.set(this.bill);
+      // this.editingBill.set(this.bill);
       this.loadBillData(this.bill);
-      
+
     }
 
     this.itemSignal.set(this.items.value);
@@ -159,16 +160,26 @@ export class CreateBill implements OnInit {
   }
 
   // ✅ Build bill object — DRY
-  private buildBillPayload(status: 'draft' | 'pending'): Bill {
-    const items = this.items.value
+  private buildBillPayload(status: BillStatus, index: number = 0): IConvenceBill {
+    const items = this.items.at(index).value;
+    const convid = this.editingBill()?.convID || this.generateCustomId(5);
     return {
-      items: items,
-      totalAmount: this.totalAmount(),
-      status
-
+      ...items,
+      id: convid,
+      status: status,
+      userRole: "Employee",
+      convID: convid
     };
   }
 
+  generateCustomId(length: number = 5): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  }
   // ✅ Save Draft
   saveDraft(): void {
     if (this.bilform.invalid) {
@@ -176,9 +187,21 @@ export class CreateBill implements OnInit {
       return;
     }
 
-    const payload = this.buildBillPayload('draft');
-    this.billService.saveDraft(payload);
-    this.router.navigate(['/draft-bills']);
+
+    this.items.controls.forEach((_, i) => {
+      const payload = this.buildBillPayload(BillStatus.DRAFT, i);
+
+      this.billService.updateBillApi(payload).subscribe({
+        next: (res) => {
+          console.log(`Item ${i + 1} saved:`, res);
+
+          if (i === this.items.length - 1) {
+            this.router.navigate(['/draft-bills']);
+          }
+        },
+        error: (err) => console.error(`Error saving item ${i}:`, err)
+      });
+    });
   }
 
   // ✅ Submit to Supervisor
@@ -190,16 +213,16 @@ export class CreateBill implements OnInit {
 
     this.isSubmitting.set(true);
 
-    const payload = this.buildBillPayload('pending');
+    const payload = this.buildBillPayload(BillStatus.PENDING);
 
-    if (this.isEditMode() && this.editingBill()) {
-      this.billService.updateBill({
-        ...payload,
-        id: this.editingBill()!.id
-      });
-    } else {
-      this.billService.submitBill(payload);
-    }
+    // if (this.isEditMode() && this.editingBill()) {
+    //   this.billService.updateBill({
+    //     ...payload,
+    //     id: this.editingBill()!.id
+    //   });
+    // } else {
+    //   this.billService.submitBill(payload);
+    // }
 
     this.isSubmitting.set(false);
     this.router.navigate(['/success']);
@@ -270,8 +293,8 @@ export class CreateBill implements OnInit {
   }
 
 
-
-
-
 }
+
+
+
 

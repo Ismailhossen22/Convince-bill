@@ -1,0 +1,116 @@
+{
+  "bills": [
+    {
+      "id": "CB-001",
+      "visitedDate": "2025-01-01",
+      "toLocation": "Dhanmondi",
+      "fromLocation": "Office",
+      "purpose": "Client Meeting",
+      "transportMode": "Rickshaw",
+      "companyName": "Unilever",
+      "userId": "USR-001",
+      "amount": "40",
+      "status": 1,
+      "convID": "CB-001",
+      "userRole": "employee"
+    },
+    {
+      "id": "CB-002",
+      "visitedDate": "2025-01-02",
+      "toLocation": "Mirpur",
+      "fromLocation": "Dhanmondi",
+      "purpose": "Site Visit",
+      "transportMode": "Bus",
+      "companyName": "BAT",
+      "userId": "USR-002",
+      "amount": "30",
+      "status": 1,
+      "convID": "CB-002",
+      "userRole": "employee"
+    },
+    {
+      "id": "CB-003",
+      "visitedDate": "2025-01-03",
+      "toLocation": "Gulshan",
+      "fromLocation": "Mirpur",
+      "purpose": "Meeting",
+      "transportMode": "CNG",
+      "companyName": "GP",
+      "userId": "USR-003",
+      "amount": "60",
+      "status": 2,
+      "convID": "CB-003",
+      "userRole": "manager"
+    },
+    {
+      "0": {
+        "visitedDate": "2026-05-05",
+        "fromLocation": "dd",
+        "toLocation": "dd",
+        "companyName": "dd",
+        "purpose": "Office Work",
+        "transportMode": "CNG",
+        "amount": 234
+      },
+      "id": "L3FjcqDsgMM",
+      "status": 1,
+      "userRole": "Employee",
+      "convID": "5BTrZ"
+    },
+    {
+      "0": {
+        "visitedDate": "2026-05-05",
+        "fromLocation": "ff",
+        "toLocation": "rr",
+        "companyName": "tt",
+        "purpose": "Office Work",
+        "transportMode": "CNG",
+        "amount": 4555
+      },
+      "id": "9-GL-Ir4O0Y",
+      "status": 1,
+      "userRole": "Employee",
+      "convID": "umJAS"
+    },
+    {
+      "visitedDate": "2026-05-05",
+      "fromLocation": "dd",
+      "toLocation": "dd",
+      "companyName": "dd",
+      "purpose": "Office Work",
+      "transportMode": "CNG",
+      "amount": 344,
+      "id": "J6SMtSORMuY",
+      "status": 1,
+      "userRole": "Employee",
+      "convID": "NmOxX"
+    },
+    {
+      "visitedDate": "2026-05-05",
+      "fromLocation": "dd",
+      "toLocation": "dd",
+      "companyName": "dd",
+      "purpose": "Client Meeting",
+      "transportMode": "CNG",
+      "amount": 45,
+      "id": "6lyy-mB2B20",
+      "status": 1,
+      "userRole": "Employee",
+      "convID": "kN5HM"
+    },
+    {
+      "visitedDate": "2026-05-06",
+      "fromLocation": "dd",
+      "toLocation": "dd",
+      "companyName": "dd",
+      "purpose": "Client Meeting",
+      "transportMode": "CNG",
+      "amount": 455,
+      "id": "BKMrI66CLNw",
+      "status": 1,
+      "userRole": "Employee",
+      "convID": "6873Q"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

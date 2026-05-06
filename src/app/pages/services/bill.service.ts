@@ -1,7 +1,7 @@
 // services/bill.service.ts
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Bill } from '../models/bill.mode';
+import {  Observable } from 'rxjs';
+import { Bill, BillStatus, IConvenceBill } from '../models/bill.mode';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -12,22 +12,44 @@ export class BillService {
 
 
 
+ // private apiUrl = 'json/convence-bill.json';
+ private apiUrl = 'http://localhost:3000/bills';
+
+
+  getBills(): Observable<IConvenceBill[]> {
+    return this.http.get<IConvenceBill[]>(this.apiUrl);
+  }
+
+  // updateBillApi(bill: IConvenceBill): Observable<IConvenceBill> {
+  //   return this.http.put<IConvenceBill>(`${this.apiUrl}/${bill.convID}`, bill);
+  // }
+
+   updateBillApi(bill: IConvenceBill): Observable<IConvenceBill> {
+    return this.http.post<IConvenceBill>(this.apiUrl, bill);
+  }
+
+
+
+
   private billSignal = signal<Bill[]>([]);
 
   draftBills = computed(() =>
-    this.billSignal().filter(b => b.status === 'draft'));
+    this.billSignal().filter(b => b.status === BillStatus.DRAFT));
 
   pendingBills = computed(() =>
-    this.billSignal().filter(b => b.status === 'pending'));
+    this.billSignal().filter(b => b.status === BillStatus.PENDING));
 
   rejectedBills = computed(() =>
-    this.billSignal().filter(b => b.status === 'rejected'));
+    this.billSignal().filter(b => b.status === BillStatus.REJECTED));
+  approvedBills = computed(() =>
+    this.billSignal().filter(b => b.status === BillStatus.APPROVED));
+
 
   allBills = computed(() => this.billSignal());
 
   saveDraft(bill: Bill) {
     bill.id = 'CB-' + Date.now();
-    bill.status = 'draft';
+    bill.status = BillStatus.DRAFT;
 
     this.billSignal.update(bills => [...bills, bill]);
   }
@@ -36,7 +58,7 @@ export class BillService {
 
   submitBill(bill: Bill) {
     bill.id = 'CB-' + Date.now();
-    bill.status = 'pending';
+    bill.status = BillStatus.PENDING;
     this.billSignal.update(bills => [...bills, bill]);
   }
 
@@ -56,7 +78,7 @@ export class BillService {
   approveBill(id: string) {
     this.billSignal.update(bills =>
       bills.map(b =>
-        b.id === id ? { ...b, status: 'approved' } : b
+        b.id === id ? { ...b, status: BillStatus.APPROVED } : b
       )
     );
   }
@@ -66,7 +88,7 @@ export class BillService {
       bills.map(b =>
         b.id === id
           ? {
-            ...b, status: 'rejected',
+            ...b, status: BillStatus.REJECTED,
             rejectionReason: reason
           }
           : b

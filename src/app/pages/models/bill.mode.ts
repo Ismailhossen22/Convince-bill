@@ -1,20 +1,19 @@
 // models/bill.model.ts
-export interface BillItem {
-  sl: number;
-  visitedDate: string;
-  toLocation: string;
-  fromLocation: string;
-  purpose: string;
-  transportMode: string;
-  companyName: string;
-  userId: string;
-  amount: number;
-  status: number;
-  convID: string;
-  userRole: string | null;
+// export interface BillItem {
+//   visitedDate: string;
+//   toLocation: string;
+//   fromLocation: string;
+//   purpose: string;
+//   transportMode: string;
+//   companyName: string;
+//   userId: string;
+//   amount: number;
+//   status: number;
+//   convID: string;
+//   userRole: string | null;
 
 
-}
+// }
 
 export interface UserData {
   userId: string;
@@ -27,14 +26,14 @@ export interface UserData {
 export interface Bill {
   id?: string;
   totalAmount: number;
-  status: 'draft' | 'pending' | 'approved' |
-  'rejected' | 'in_review';
-  items: BillItem[];
+  status: BillStatus;
+  items: IConvenceBill[];
   comments?: string;
   rejectionReason?: string;
 }
 
 export interface IConvenceBill {
+  id:string;
   visitedDate: string;
   toLocation: string;
   fromLocation: string;
@@ -46,4 +45,13 @@ export interface IConvenceBill {
   status: number;
   convID: string;
   userRole: string | null;
+}
+
+
+export enum BillStatus {
+  DRAFT = 1,
+  PENDING = 2,
+  APPROVED = 3,
+  REJECTED = 4,
+  IN_REVIEW = 5
 }

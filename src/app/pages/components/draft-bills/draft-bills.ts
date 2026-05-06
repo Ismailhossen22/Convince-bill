@@ -45,7 +45,7 @@ export class DraftBills {
   }
 
   submitBill(bill: Bill) {
-    this.billService.updateBill({ ...bill, status: 'pending' });
+    this.billService.updateBill({ ...bill, status: 2 });
     this.router.navigate(['/success']);
   }
 
