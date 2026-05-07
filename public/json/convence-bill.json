@@ -1,87 +1,30 @@
 {
   "bills": [
     {
-      "id": "CB-001",
-      "visitedDate": "2025-01-01",
-      "toLocation": "Dhanmondi",
-      "fromLocation": "Office",
-      "purpose": "Client Meeting",
-      "transportMode": "Rickshaw",
-      "companyName": "Unilever",
-      "userId": "USR-001",
-      "amount": "40",
-      "status": 1,
-      "convID": "CB-001",
-      "userRole": "employee"
-    },
-    {
-      "0": {
-        "visitedDate": "2026-05-05",
-        "fromLocation": "dd",
-        "toLocation": "dd",
-        "companyName": "dd",
-        "purpose": "Office Work",
-        "transportMode": "CNG",
-        "amount": 234
-      },
-      "id": "dH44i",
-      "status": 1,
-      "userRole": "Employee",
-      "convID": "dH44i"
-    },
-    {
-      "0": {
-        "visitedDate": "2026-05-05",
-        "fromLocation": "ff",
-        "toLocation": "rr",
-        "companyName": "tt",
-        "purpose": "Office Work",
-        "transportMode": "CNG",
-        "amount": 4555
-      },
-      "id": "z1gpO",
-      "status": 1,
-      "userRole": "Employee",
-      "convID": "z1gpO"
-    },
-    {
-      "id": "Elue6",
       "visitedDate": "2026-05-05",
-      "fromLocation": "dd",
-      "toLocation": "dd",
-      "companyName": "dd",
+      "fromLocation": "dede",
+      "toLocation": "de",
+      "companyName": "de",
       "purpose": "Office Work",
-      "transportMode": "CNG",
-      "amount": 344,
-      "status": 1,
-      "userRole": "Employee",
-      "convID": "Elue6"
-    },
-    {
-      "id": "Da3df",
-      "visitedDate": "2026-05-05",
-      "fromLocation": "dd",
-      "toLocation": "dd",
-      "companyName": "dd",
-      "purpose": "Client Meeting",
-      "transportMode": "CNG",
-      "amount": 45,
-      "status": 1,
-      "userRole": "Employee",
-      "convID": "Da3df"
-    },
-    {
-      "id": "fgtQE",
-      "visitedDate": "2026-05-05",
-      "fromLocation": "Office",
-      "toLocation": "Dhanmondi",
-      "companyName": "Unilever",
-      "purpose": "Client Meeting",
-      "transportMode": "Rickshaw",
-      "amount": 200,
-      "convID": "fgtQE",
+      "transportMode": "Own Vehicle",
+      "amount": 55,
+      "convID": "1TJtn",
+      "id": "v4E-3M03q3",
       "status": 1,
       "userRole": "Employee"
+    },
+    {
+      "visitedDate": "2026-04-28",
+      "fromLocation": "hyhyj",
+      "toLocation": "oik",
+      "companyName": "ool",
+      "purpose": "Office Work",
+      "transportMode": "Uber",
+      "amount": 70,
+      "id": "iYHx5DyxtRg",
+      "status": 1,
+      "userRole": "Employee",
+      "convID": "8BHwM"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

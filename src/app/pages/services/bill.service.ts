@@ -1,8 +1,10 @@
-// services/bill.service.ts
+
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Bill, BillStatus, IConvenceBill } from '../models/bill.mode';
 import { HttpClient } from '@angular/common/http';
+import { url } from 'inspector';
+import { error } from 'console';
 
 
 @Injectable({ providedIn: 'root' })
@@ -12,11 +14,13 @@ export class BillService {
 
 
   private readonly http = inject(HttpClient)
-
   // private apiUrl = 'json/convence-bill.json';
   private apiUrl = 'http://localhost:3000/bills';
+
   private billSignalCreate = signal<IConvenceBill[]>([]);
+
   private billSignal = signal<Bill[]>([]);
+
   constructor() {
     this.loadBills();
   }
@@ -28,7 +32,7 @@ export class BillService {
           this.billSignal.set([])
           return;
         }
-
+        debugger;
         const groupedByStatus = data.reduce((acc, item) => {
 
           const statusValue = item.status;
@@ -46,11 +50,11 @@ export class BillService {
 
           return {
             items: items,
-            totalAmount: items.reduce((sum, item) => sum + item.amount, 0),
+            totalAmount: items?.reduce((sum, item) => sum + item.amount, 0),
             comments: '',
           }
         });
-          console.log(transformedBill);
+        console.log(transformedBill);
         this.billSignal.set(transformedBill)
 
       }, error: (err) => {
@@ -69,11 +73,13 @@ export class BillService {
   }
 
   updateBillApi(bill: IConvenceBill): Observable<IConvenceBill> {
-    const url = `${this.apiUrl}/${bill.convID}`;
-    return this.http.put<IConvenceBill>(url, bill);
+    const url = `${this.apiUrl}/${bill.id}`;
+    return this.http.patch<IConvenceBill>(url, bill);
   }
 
-
+ getCompanySuggestions(query: string): Observable<any[]> {
+  return this.http.get<any[]>(`https://contentapi.bdjobs.com/api/Company/suggestions?query=${query}`);
+}
 
 
 
@@ -151,12 +157,19 @@ export class BillService {
   }
 
 
-  deleteBill(convID: string) {
-    this.billSignal.update(bills =>
-      bills.filter(b => b.items.length > 0 && b.items[0].convID !== convID)
+  deleteBill(id: string) {
+    const url = `${this.apiUrl}/${id}`;
+
+    return this.http.delete(url).pipe(
+      tap(() => {
+
+        this.billSignal.update(bills =>
+          bills.filter(b => b.items.length > 0 && b.items[0].id !== id)
+        );
+        console.log('Signal updated from service');
+      })
     );
   }
-
 
 
   // getAllBills(): Bill[] {

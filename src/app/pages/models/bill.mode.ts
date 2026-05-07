@@ -24,7 +24,7 @@ export interface UserData {
 
 }
 export interface Bill {
- 
+
   totalAmount: number;
   items: IConvenceBill[];
   comments?: string;
@@ -32,6 +32,7 @@ export interface Bill {
 }
 
 export interface IConvenceBill {
+  id:string
   visitedDate: string;
   toLocation: string;
   fromLocation: string;

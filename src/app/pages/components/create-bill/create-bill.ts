@@ -9,6 +9,7 @@ import { Bill, UserData, } from '../../models/bill.mode';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
 import { it } from 'node:test';
 import { error } from 'node:console';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 
 
 @Component({
@@ -126,7 +127,9 @@ export class CreateBill implements OnInit {
       purpose: [''],
       transportMode: [''],
       amount: [0, Validators.required],
-      convID: ['']
+      id:['']
+
+
     });
   }
 
@@ -174,7 +177,6 @@ export class CreateBill implements OnInit {
     const convid = this.editingBill()?.convID || this.generateCustomId(5);
     return {
       ...items,
-      id: convid,
       status: status,
       userRole: "Employee",
       convID: convid
@@ -199,7 +201,7 @@ export class CreateBill implements OnInit {
 
     this.items.controls.forEach((_, i) => {
       const payload = this.buildBillPayload(BillStatus.DRAFT, i);
-
+      debugger;
       this.billService.AddBillApi(payload).subscribe({
         next: (res) => {
           console.log(`Item ${i + 1} saved:`, res);
@@ -213,16 +215,52 @@ export class CreateBill implements OnInit {
     });
   }
 
-  onUpdateBill(formData: IConvenceBill) {
-    this.billService.updateBillApi(formData).subscribe({
-      next: () => {
+  editBill() {
+    if (this.bilform.invalid) {
+      this.bilform.markAllAsTouched();
+      return;
+    }
+    const formData = this.items.value;
+    debugger;
+    formData.forEach((item: IConvenceBill) => {
 
-      }, error: (err) => console.error('Update failed:', err)
-    })
+      this.billService.updateBillApi(item).subscribe({
+        next: (item) => {
+          console.log(item.id)
+          this.router.navigate(['/draft-bills']);
+        }, error: (err) => console.error('Update failed:', err)
+      })
+
+
+    });
+
   }
 
+  suggestions: any[] = [];
 
 
+// setupCompanyNameListener(index: number) {
+//   const itemFormGroup = this.items.at(index) as FormGroup;
+
+//   itemFormGroup.get('companyName')?.valueChanges.pipe(
+//     debounceTime(400),
+//     distinctUntilChanged(),
+//     switchMap(value => {
+//       if (typeof value === 'string' && value.length > 1) {
+//         return this.billService.getCompanySuggestions(value);
+//       }
+//       return of([]);
+//     })
+//   ).subscribe(data => {
+//     this.suggestions = data;
+//     this.activeDropdownIndex = index;
+//   });
+// }
+
+selectCompany(name: string) {
+  this.bilform.patchValue({ companyName: name });
+  this.suggestions = []; // ড্রপডাউন বন্ধ করে দেওয়া
+}
 
   // ✅ Submit to Supervisor
   submitToSupervisor(): void {

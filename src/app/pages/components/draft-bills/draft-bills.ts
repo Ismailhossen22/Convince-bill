@@ -1,14 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BillService } from '../../services/bill.service';
 
+import { Component, computed, inject } from '@angular/core';
+import { BillService } from '../../services/bill.service';
 import { Router } from '@angular/router';
-import { Bill, IConvenceBill } from '../../models/bill.mode';
+import { IConvenceBill } from '../../models/bill.mode';
+import { ShortDatePipe } from '../../pipes/short-data.pipe';
 
 @Component({
   selector: 'app-draft-bills',
-  imports: [],
+  imports: [ShortDatePipe],
   templateUrl: './draft-bills.html',
   styleUrl: './draft-bills.css',
 })
@@ -36,10 +35,15 @@ export class DraftBills {
     this.router.navigate(['/create-bill'], { state: { billData: item } });
   }
 
-
-  deleteDraft(id: string) {
-
-    this.billService.deleteBill(id);
+  deleteBill(Id: string) {
+    debugger;
+    if (confirm("Are you sure want to delete this bill?")) {
+      this.billService.deleteBill(Id).subscribe({
+        next: () => {
+          alert('Deleted successfully!')
+        }, error: (err) => console.error(err)
+      })
+    }
   }
 
   // submitBill(bill: Bill) {

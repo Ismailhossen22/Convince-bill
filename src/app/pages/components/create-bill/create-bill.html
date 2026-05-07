@@ -6,60 +6,54 @@
   <div>
     <div class="flex flex-row-reverse items-center justify-between mb-4">
       <div class="flex gap-2 flex-col">
-        <button
-          class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-        >
+        <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
           Attendance Report
         </button>
-        <button
-          class="px-4 py-2 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
-        >
+        <button class="px-4 py-2 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
           Holiday List
         </button>
       </div>
       @if (userInfo()) {
-        <div class="border border-gray-200 rounded-lg overflow-hidden w-3/5">
-          <table class="w-full text-sm">
-            <tbody class="divide-y divide-gray-300">
-              <tr>
-                <td class="px-4 py-3 font-medium text-gray-600 w-1/2">Name</td>
-                <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                  {{ userInfo()!.name }}
-                </td>
-              </tr>
+      <div class="border border-gray-200 rounded-lg overflow-hidden w-3/5">
+        <table class="w-full text-sm">
+          <tbody class="divide-y divide-gray-300">
+            <tr>
+              <td class="px-4 py-3 font-medium text-gray-600 w-1/2">Name</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
+                {{ userInfo()!.name }}
+              </td>
+            </tr>
 
-              <tr>
-                <td class="px-4 py-3 font-medium text-gray-600">Contact No</td>
-                <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                  {{ userInfo()!.contacNo }}
-                </td>
-              </tr>
+            <tr>
+              <td class="px-4 py-3 font-medium text-gray-600">Contact No</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
+                {{ userInfo()!.contacNo }}
+              </td>
+            </tr>
 
-              <tr>
-                <td class="px-4 py-3 font-medium text-gray-600">Date of Submission</td>
-                <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                  {{ userInfo()!.submitDate }}
-                </td>
-              </tr>
+            <tr>
+              <td class="px-4 py-3 font-medium text-gray-600">Date of Submission</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
+                {{ userInfo()!.submitDate }}
+              </td>
+            </tr>
 
-              <tr>
-                <td class="px-4 py-3 font-medium text-gray-600">Supervisor's Designation</td>
-                <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                  {{ userInfo()!.designation }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+            <tr>
+              <td class="px-4 py-3 font-medium text-gray-600">Supervisor's Designation</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
+                {{ userInfo()!.designation }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       }
     </div>
 
     <!-- Holiday Warning -->
     <div>
-      <div
-        *ngIf="isHoliday"
-        class="mb-4 px-4 py-3 bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-lg text-sm"
-      >
+      <div *ngIf="isHoliday"
+        class="mb-4 px-4 py-3 bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-lg text-sm">
         ⚠️ Selected date falls on a Holiday/Weekend!
       </div>
     </div>
@@ -85,110 +79,84 @@
 
         <tbody formArrayName="billitem" class="divide-y divide-gray-200">
           @for (item of items.controls; track $index; let i = $index) {
-            <tr [formGroupName]="i" class="bg-white hover:bg-gray-50">
-              <td class="px-3 py-2 border border-gray-300">{{ i + 1 }}</td>
+          <tr [formGroupName]="i" class="bg-white hover:bg-gray-50">
+            <td class="px-3 py-2 border border-gray-300">{{ i + 1 }}</td>
 
-              <td class="px-3 py-2 border border-gray-300 relative">
-                @if (!getControl($index, 'visitedDate')) {
-                  <input
-                    type="date"
-                    formControlName="visitedDate"
-                    class="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                  />
-                } @else {
-                  <div class="relative" (click)="clearDate($index)">
-                    <span class="px-2 py-1 text-sm">
-                      {{ getControl($index, 'visitedDate') | shortDate }}
-                    </span>
-                    <input
-                      type="date"
-                      formControlName="visitedDate"
-                      class="absolute inset-0 opacity-0 cursor-pointer w-full"
-                    />
-                  </div>
+            <td class="px-3 py-2 border border-gray-300 relative">
+              @if (!getControl($index, 'visitedDate')) {
+              <input type="date" formControlName="visitedDate"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded" />
+              } @else {
+              <div class="relative" (click)="clearDate($index)">
+                <span class="px-2 py-1 text-sm">
+                  {{ getControl($index, 'visitedDate') | shortDate }}
+                </span>
+                <input type="date" formControlName="visitedDate"
+                  class="absolute inset-0 opacity-0 cursor-pointer w-full" />
+              </div>
+              }
+
+              @if (hasError($index, 'visitedDate', 'futureDate')) {
+              <div class="absolute z-50 bottom-full left-0 mb-1 w-max">
+                <div class="bg-gray-200 text-red-500 text-base rounded px-2 py-1 shadow-lg">
+                  Future date is not allowed
+
+                  <div class="absolute top-full left-3 border-4 border-transparent border-t-red-500"></div>
+                </div>
+              </div>
+              }
+
+              @if (hasError($index, 'visitedDate', 'maxOneMonth')) {
+              <div class="absolute z-50 bottom-full left-0 mb-1 w-max">
+                <div class="bg-gray-200 text-red-500 text-base rounded px-2 py-1 shadow-lg">
+                  Date cannot be older than 1 month
+
+                  <div class="absolute top-full left-3 border-4 border-transparent border-t-red-500"></div>
+                </div>
+              </div>
+              }
+            </td>
+
+            <td class="px-3 py-2 border border-gray-300">
+              <input formControlName="fromLocation"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </td>
+            <td class="px-3 py-2 border border-gray-300">
+              <input formControlName="toLocation"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </td>
+            <td class="px-3 py-2 border border-gray-300">
+              <input formControlName="companyName"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </td>
+            <td class="px-3 py-2 border border-gray-300">
+              <select formControlName="purpose"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500">
+                @for (p of purposes; track p) {
+                <option [value]="p">{{ p }}</option>
                 }
-
-                @if (hasError($index, 'visitedDate', 'futureDate')) {
-                  <div class="absolute z-50 bottom-full left-0 mb-1 w-max">
-                    <div class="bg-gray-200 text-red-500 text-base rounded px-2 py-1 shadow-lg">
-                      Future date is not allowed
-
-                      <div
-                        class="absolute top-full left-3 border-4 border-transparent border-t-red-500"
-                      ></div>
-                    </div>
-                  </div>
+              </select>
+            </td>
+            <td class="px-3 py-2 border border-gray-300">
+              <select formControlName="transportMode"
+                class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500">
+                @for (m of transportModes; track m) {
+                <option [value]="m">{{ m }}</option>
                 }
-
-                @if (hasError($index, 'visitedDate', 'maxOneMonth')) {
-                  <div class="absolute z-50 bottom-full left-0 mb-1 w-max">
-                    <div class="bg-gray-200 text-red-500 text-base rounded px-2 py-1 shadow-lg">
-                      Date cannot be older than 1 month
-
-                      <div
-                        class="absolute top-full left-3 border-4 border-transparent border-t-red-500"
-                      ></div>
-                    </div>
-                  </div>
-                }
-              </td>
-
-              <td class="px-3 py-2 border border-gray-300">
-                <input
-                  formControlName="fromLocation"
-                  class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </td>
-              <td class="px-3 py-2 border border-gray-300">
-                <input
-                  formControlName="toLocation"
-                  class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </td>
-              <td class="px-3 py-2 border border-gray-300">
-                <input
-                  formControlName="companyName"
-                  class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </td>
-              <td class="px-3 py-2 border border-gray-300">
-                <select
-                  formControlName="purpose"
-                  class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  @for (p of purposes; track p) {
-                    <option [value]="p">{{ p }}</option>
-                  }
-                </select>
-              </td>
-              <td class="px-3 py-2 border border-gray-300">
-                <select
-                  formControlName="transportMode"
-                  class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  @for (m of transportModes; track m) {
-                    <option [value]="m">{{ m }}</option>
-                  }
-                </select>
-              </td>
-              <td class="px-3 py-2 border border-gray-300">
-                <input
-                  type="number"
-                  formControlName="amount"
-                  class="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </td>
-              <td class="px-3 py-2 border border-gray-300">
-                @if (items.length > 0) {
-                  <button
-                    (click)="removeRow(i)"
-                    class="text-red-500 hover:text-red-700 transition text-base"
-                  >
-                    <img src="images/Trash.svg">
-                  </button>
-                }
-              </td>
-            </tr>
+              </select>
+            </td>
+            <td class="px-3 py-2 border border-gray-300">
+              <input type="number" formControlName="amount"
+                class="w-24 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </td>
+            <td class="px-3 py-2 border border-gray-300">
+              @if (items.length > 0) {
+              <button (click)="removeRow(i)" class="text-red-500 hover:text-red-700 transition text-base">
+                <img src="images/Trash.svg">
+              </button>
+              }
+            </td>
+          </tr>
           }
         </tbody>
 
@@ -207,27 +175,30 @@
     </div>
 
     <!-- Add Row -->
-    <button
-      (click)="addRow()"
-      class="mb-6 px-4 py-2 text-sm bg-gray-500 text-white rounded-lg hover:bg-gray-400 transition"
-    >
+    <button (click)="addRow()"
+      class="mb-6 px-4 py-2 text-sm bg-gray-500 text-white rounded-lg hover:bg-gray-400 transition">
       + Add Row
     </button>
 
     <!-- Bottom Buttons -->
     <div class="flex justify-end gap-3">
-      <button
-        (click)="saveDraft()"
-        class="px-5 py-2 text-sm border bg-[#67AED5] border-gray-400 text-gray-700 rounded-lg hover:bg-[#5aa894] transition"
-      > {{ isEditMode() ? 'Update Draft' : 'Save to Draft' }}
+      @if(!isEditMode()){
+      <button (click)="saveDraft()"
+        class="px-5 py-2 text-sm border bg-[#67AED5] border-gray-400 text-gray-700 rounded-lg hover:bg-[#5aa894] transition">
+        Save to Draft
       </button>
-      <button
-        (click)="submitToSupervisor()" [disabled]="isEditMode()"
-        class="px-5 py-2 text-sm bg-[#67D5B2] text-white rounded-lg hover:bg-[#5aa894] transition"
-      >
+      }@else {
+      <button (click)="editBill()"
+        class="px-5 py-2 text-sm border bg-[#67AED5] border-gray-400 text-gray-700 rounded-lg hover:bg-[#5aa894] transition">
+        update
+      </button>
+      }
+
+      <button (click)="submitToSupervisor()" [disabled]="isEditMode()"
+        class="px-5 py-2 text-sm bg-[#67D5B2] text-white rounded-lg hover:bg-[#5aa894] transition">
         Submit to the Supervisor
       </button>
-      
+
     </div>
   </div>
 </div>
