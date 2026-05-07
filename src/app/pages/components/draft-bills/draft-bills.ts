@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BillService } from '../../services/bill.service';
 
 import { Router } from '@angular/router';
-import { Bill } from '../../models/bill.mode';
+import { Bill, IConvenceBill } from '../../models/bill.mode';
 
 @Component({
   selector: 'app-draft-bills',
@@ -32,22 +32,20 @@ export class DraftBills {
   //   });
   // });
 
-  editBill(bill: Bill): Bill {
-
-    this.router.navigate(['/create-bill'], { state: { bill } });
-    debugger;
-    return bill;
+  editSingleItem(item: IConvenceBill) {
+    this.router.navigate(['/create-bill'], { state: { billData: item } });
   }
+
 
   deleteDraft(id: string) {
 
     this.billService.deleteBill(id);
   }
 
-  submitBill(bill: Bill) {
-    this.billService.updateBill({ ...bill, status: 2 });
-    this.router.navigate(['/success']);
-  }
+  // submitBill(bill: Bill) {
+  //   this.billService.updateBill({ ...bill, status: 2 });
+  //   this.router.navigate(['/success']);
+  // }
 
 
 

@@ -24,16 +24,14 @@ export interface UserData {
 
 }
 export interface Bill {
-  id?: string;
+ 
   totalAmount: number;
-  status: BillStatus;
   items: IConvenceBill[];
   comments?: string;
   rejectionReason?: string;
 }
 
 export interface IConvenceBill {
-  id:string;
   visitedDate: string;
   toLocation: string;
   fromLocation: string;
@@ -41,7 +39,7 @@ export interface IConvenceBill {
   transportMode: string;
   companyName: string;
   userId: string;
-  amount: string;
+  amount: number;
   status: number;
   convID: string;
   userRole: string | null;

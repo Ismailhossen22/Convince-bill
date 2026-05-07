@@ -8,6 +8,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Bill, UserData, } from '../../models/bill.mode';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
 import { it } from 'node:test';
+import { error } from 'node:console';
 
 
 @Component({
@@ -42,22 +43,23 @@ export class CreateBill implements OnInit {
   transportModes = ['CNG', 'Uber', 'Bus', 'Own Vehicle'];
   purposes = ['Client Meeting', 'Office Work', 'Field Visit'];
 
-  private bill: Bill | null = null;
+  private receivedData: IConvenceBill | null = null;
+
   constructor() {
     this.UserForm();
 
     const navigation = this.router.currentNavigation();
-    this.bill = navigation?.extras?.state?.['bill'] as Bill || null;
+    this.receivedData = navigation?.extras.state?.['billData'] as IConvenceBill;
   }
 
   ngOnInit(): void {
     this.UserForm();
 
     debugger;
-    if (this.bill) {
+    if (this.receivedData) {
       this.isEditMode.set(true);
       // this.editingBill.set(this.bill);
-      this.loadBillData(this.bill);
+      this.patchSingleRow(this.receivedData);
 
     }
 
@@ -123,7 +125,8 @@ export class CreateBill implements OnInit {
       companyName: [''],
       purpose: [''],
       transportMode: [''],
-      amount: [0, Validators.required]
+      amount: [0, Validators.required],
+      convID: ['']
     });
   }
 
@@ -148,15 +151,21 @@ export class CreateBill implements OnInit {
   }
 
 
-  // ✅ Draft থেকে এলে form এ data বসানো
 
-  private loadBillData(bill: Bill): void {
-    this.items.clear();
-    bill.items?.forEach(item => {
-      this.items.push(this.fb.group(item));
-    });
-    this.itemSignal.set(this.items.value);
 
+  // private loadBillData(bill: Bill): void {
+  //   this.items.clear();
+  //   bill.items?.forEach(item => {
+  //     this.items.push(this.fb.group(item));
+  //   });
+  //   this.itemSignal.set(this.items.value);
+
+  // }
+
+  patchSingleRow(data: IConvenceBill) {
+    if (this.items.length > 0) {
+      this.items.at(0).patchValue(data);
+    }
   }
 
   // ✅ Build bill object — DRY
@@ -191,7 +200,7 @@ export class CreateBill implements OnInit {
     this.items.controls.forEach((_, i) => {
       const payload = this.buildBillPayload(BillStatus.DRAFT, i);
 
-      this.billService.updateBillApi(payload).subscribe({
+      this.billService.AddBillApi(payload).subscribe({
         next: (res) => {
           console.log(`Item ${i + 1} saved:`, res);
 
@@ -203,6 +212,17 @@ export class CreateBill implements OnInit {
       });
     });
   }
+
+  onUpdateBill(formData: IConvenceBill) {
+    this.billService.updateBillApi(formData).subscribe({
+      next: () => {
+
+      }, error: (err) => console.error('Update failed:', err)
+    })
+  }
+
+
+
 
   // ✅ Submit to Supervisor
   submitToSupervisor(): void {
