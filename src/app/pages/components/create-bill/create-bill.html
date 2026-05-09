@@ -67,7 +67,7 @@
     <!-- Employee Info -->
 
     <!-- Bill Items Table -->
-    <div class=" rounded-lg   mb-4" [formGroup]="bilform">
+    <div class="rounded-lg mb-4" [formGroup]="bilform">
       <table class="w-full text-sm text-leftborder border-gray-200">
         <thead class="bg-gray-100 text-gray-600 font-medium">
           <tr>
@@ -151,7 +151,7 @@
                   <input
                     formControlName="companyName"
                     (focus)="activeDropdownIndex = i"
-                    (input)="activeDropdownIndex=i"
+                    (input)="activeDropdownIndex = i"
                     (blur)="closeDropdown()"
                     autocomplete="off"
                     placeholder="type company name.."
@@ -161,7 +161,7 @@
                     <ul
                       class="absolute z-50 w-full bg-white border border-gray-400 rounded shadow-xl left-0 top-full mt-1"
                     >
-                      @for (company of suggestions.slice(0,10); track company) {
+                      @for (company of suggestions.slice(0, 10); track company) {
                         <li
                           (mousedown)="selectCompany(company.companyName, i)"
                           class="px-3 py-2 text-sm hover:bg-blue-50 cursor-pointer border-b last:border-none text-left"
@@ -198,7 +198,7 @@
                 <input
                   type="number"
                   formControlName="amount"
-                  class="w-24 px-2 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500 "
+                  class="w-24 px-2 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-500"
                 />
               </td>
               <td class="px-3 py-2 border border-gray-300">
