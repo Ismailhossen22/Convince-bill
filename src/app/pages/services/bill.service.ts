@@ -1,11 +1,7 @@
-
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { Bill, BillStatus, IConvenceBill } from '../models/bill.mode';
-import { HttpClient } from '@angular/common/http';
-import { url } from 'inspector';
-import { error } from 'console';
-
+import { HttpClient } from "@angular/common/http";
+import { computed, inject, Injectable, signal } from "@angular/core";
+import { Bill, BillStatus, IConvenceBill } from "../models/bill.mode";
+import { map, Observable, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 
@@ -15,11 +11,13 @@ export class BillService {
 
   private readonly http = inject(HttpClient)
   // private apiUrl = 'json/convence-bill.json';
+
   private apiUrl = 'http://localhost:3000/bills';
 
-  private billSignalCreate = signal<IConvenceBill[]>([]);
+  private billinfo = signal<IConvenceBill[]>([]);
 
   private billSignal = signal<Bill[]>([]);
+  selectedDate = signal<string>('');
 
   constructor() {
     this.loadBills();
@@ -28,11 +26,13 @@ export class BillService {
   loadBills() {
     this.http.get<IConvenceBill[]>(this.apiUrl).subscribe({
       next: (data: IConvenceBill[]) => {
+        this.billinfo.set(data);
+
         if (!data || data.length == 0) {
           this.billSignal.set([])
           return;
         }
-        debugger;
+
         const groupedByStatus = data.reduce((acc, item) => {
 
           const statusValue = item.status;
@@ -77,23 +77,52 @@ export class BillService {
     return this.http.patch<IConvenceBill>(url, bill);
   }
 
- getCompanySuggestions(query: string): Observable<any[]> {
-  return this.http.get<any[]>(`https://contentapi.bdjobs.com/api/Company/suggestions?query=${query}`);
-}
+  getCompanySuggestions(query: string): Observable<any[]> {
+    return this.http.get<any[]>(`https://contentapi.bdjobs.com/api/Company/suggestions?query=${query}`);
+  }
+
+
+
+  getBills(): Observable<Bill[]> {
+    return this.http.get<IConvenceBill[]>(this.apiUrl).pipe(
+      map(data => {
+        if (!data || data.length === 0) return [];
+
+        const grouped = data.reduce((acc: { [key: string]: IConvenceBill[] }, item) => {
+          const dateKey = item.visitedDate.split('T')[0];
+          if (!acc[dateKey]) acc[dateKey] = [];
+          acc[dateKey].push(item);
+          return acc;
+        }, {});
+
+        const grandTotal = data.reduce((sum, item) => sum + (item.amount || 0), 0);
+
+        return Object.keys(grouped).map(date => ({
+          items: grouped[date],
+          subtotal: grouped[date].reduce((sum, item) => sum + (item.amount || 0), 0),
+          totalAmount: grandTotal,
+          comments: '',
+          rejectionReason: ''
+        }));
+      })
+    );
+  }
 
 
 
 
   draftBills = computed(() =>
-    this.billSignal().filter(b => b.items.length > 0 && b.items[0].status === BillStatus.DRAFT)
+    this.billSignal().filter(b => b.items.length > 0 && b.items[0].status === BillStatus.Draft)
   );
   pendingBills = computed(() =>
-    this.billSignal().filter(b => b.items.length > 0 && b.items[0].status === BillStatus.PENDING));
+    this.billSignal().filter(b => b.items.length > 0 && b.items[0].status === BillStatus.SentToSupervisor));
 
   rejectedBills = computed(() =>
-    this.billSignal().filter(b => b.items.length > 0 && b.items[0].status === BillStatus.REJECTED));
+    this.billSignal().filter(b => b.items.length > 0 && b.items[0].status === BillStatus.Rejected));
+
+
   approvedBills = computed(() =>
-    this.billSignal().filter(b => b.items.length > 0 && b.items[0].status === BillStatus.APPROVED));
+    this.billSignal().filter(b => b.items.length > 0 && b.items[0].status === BillStatus.SentToSupervisor));
 
 
   allBills = computed(() => this.billSignal());
@@ -112,7 +141,7 @@ export class BillService {
 
 
   updateBill(updatedBill: IConvenceBill) {
-    this.billSignalCreate.update(bills =>
+    this.billinfo.update(bills =>
       bills.map(item =>
         item.convID === updatedBill.convID ? updatedBill : item
       )

@@ -1,1 +1,250 @@
-<p>approval-dashboard works!</p>
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <div class="px-6 py-5 flex items-center justify-center mb-4">
+    <h2 class="w-3/5 py-5 rounded-xl bg-[#cfcfc6] text-2xl text-center font-semibold text-gray-800">
+      Bill Approval Dashboard (Detail View)
+    </h2>
+  </div>
+
+  <div class="w-full">
+    <div class="flex items-center justify-center mb-4">
+      <div class="border border-gray-500 rounded-lg overflow-hidden w-3/6">
+        <table class="w-full text-sm">
+          <tbody class="divide-y divide-gray-500 text-center text-gray-900 text-base/8">
+            <tr>
+              <td class="px-4 py-3 font-medium w-1/2">Employee Name</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-500"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3 font-medium">Designation</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-500"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3 font-medium">Department</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-500"></td>
+            </tr>
+
+            <tr>
+              <td class="px-4 py-3 font-medium">Group</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-500"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="flex flex-col items-center justify-between mb-4">
+      <!-- Bill Items Table -->
+      <div class="rounded-lg border border-gray-200 mb-4">
+        <div class="overflow-x-auto p-4">
+          <table class="w-full text-sm text-center border-collapse border border-gray-800">
+            <!-- Table Header -->
+            <thead class="bg-white text-gray-800 font-bold uppercase tracking-wider">
+              <tr>
+                <th class="border border-gray-800 px-2 py-3 w-28">Visited Date</th>
+                <th class="border border-gray-800 px-2 py-3 w-32">
+                  <div class="flex items-center justify-center gap-2">
+                    <input type="checkbox" class="w-4 h-4" /> <span>Select All</span>
+                  </div>
+                </th>
+                <th class="border border-gray-800 px-2 py-3">From</th>
+                <th class="border border-gray-800 px-2 py-3">To</th>
+                <th class="border border-gray-800 px-2 py-3">Visited Company</th>
+                <th class="border border-gray-800 px-2 py-3">Purpose of visit</th>
+                <th class="border border-gray-800 px-2 py-3 w-28">Mode of transport</th>
+                <th class="border border-gray-800 px-2 py-3 w-24">Amount (Taka)</th>
+                <th class="border border-gray-800 px-2 py-3 w-24">Amount (Taka)</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- Outer Loop: প্রতিটি তারিখের গ্রুপের জন্য (Bill অবজেক্ট) -->
+              @for (bill of filteredApprovedBills(); track $index) {
+                <!-- Inner Loop: ওই তারিখের প্রতিটি আইটেমের জন্য (IConvenceBill) -->
+                @for (item of bill.items; track item.convID; let i = $index) {
+                  <tr class="hover:bg-gray-50">
+                    <!-- Visited Date Column: শুধুমাত্র প্রথম রো-তে rowspan হবে -->
+                    @if (i === 0) {
+                      <td
+                        [attr.rowspan]="bill.items.length + 1"
+                        class="border border-gray-800 px-2 py-2 font-semibold align-top bg-white"
+                      >
+                        {{ item.visitedDate | shortDate }}
+                      </td>
+                    }
+
+                    <!-- Checkbox Column -->
+                    <td class="border border-gray-800 px-2 py-2 text-center">
+                      <input type="checkbox" class="w-4 h-4" />
+                    </td>
+
+                    <!-- Content Columns -->
+                    <td class="border border-gray-800 px-2 py-2 text-left">
+                      {{ item.fromLocation }}
+                    </td>
+                    <td class="border border-gray-800 px-2 py-2 text-left">
+                      {{ item.toLocation }}
+                    </td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.companyName }}</td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.purpose }}</td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.transportMode }}</td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.amount }}</td>
+
+                   
+                    @if (i === 0) {
+                      <td
+                        [attr.rowspan]="bill.items.length + 1"
+                        class="border border-gray-800 px-2 py-2 font-bold text-center bg-white"
+                      >
+                        {{ bill.subtotal }}
+                      </td>
+                    }
+                  </tr>
+                }
+
+                
+                <tr class="bg-white">
+                  <td
+                    colspan="6"
+                    class="border border-gray-800 px-2 py-1 font-bold text-center italic"
+                  >
+                    Sub Total=
+                  </td>
+                  
+                  <td class="border border-gray-800 px-2 py-1 font-bold">{{ bill.subtotal }}</td>
+                </tr>
+              }
+            </tbody>
+
+            <!-- Table Footer: Grand Total -->
+            <tfoot>
+              <tr class="bg-white">
+                <td
+                  colspan="8"
+                  class="border border-gray-800 px-2 py-2 font-bold text-center italic"
+                >
+                  Grand Total=
+                </td>
+                <td class="border border-gray-800 px-2 py-2 font-bold text-center text-blue-600">
+                  
+                  {{ draftBills().length > 0 ? draftBills()[0].totalAmount : 0 }}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div class="flex justify-center gap-4 mt-7 text-lg">
+            <button
+              class="min-w-48 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg flex items-center justify-around gap-2 font-semibold shadow-md"
+            >
+              <img src="images/Approval.svg" class="h-8" /> Approve
+            </button>
+            <button
+              class="min-w-48 bg-red-400 hover:bg-red-500 text-white py-2 rounded-lg flex items-center justify-around font-semibold shadow-md"
+            >
+              <img src="images/Cancel.svg" class="h-8" />
+              <span>Reject</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 
+        <div class="overflow-x-auto p-4">
+          <table class="w-full text-sm text-center border-collapse border border-gray-800">
+            <thead class="bg-white text-gray-800 font-bold uppercase tracking-wider">
+              <tr>
+                <th class="border border-gray-800 px-2 py-3 w-28">Visited Date</th>
+                <th class="border border-gray-800 px-2 py-3 w-32">
+                  <div class="flex items-center justify-center gap-2">
+                    <input type="checkbox" class="w-4 h-4" /> <span>Select All</span>
+                  </div>
+                </th>
+                <th class="border border-gray-800 px-2 py-3">From</th>
+                <th class="border border-gray-800 px-2 py-3">To</th>
+                <th class="border border-gray-800 px-2 py-3">Visited Company</th>
+                <th class="border border-gray-800 px-2 py-3">Purpose of visit</th>
+                <th class="border border-gray-800 px-2 py-3 w-28">Mode of transport</th>
+                <th class="border border-gray-800 px-2 py-3 w-24">Amount (Taka)</th>
+                <th class="border border-gray-800 px-2 py-3 w-24">Amount (Taka)</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (bill of draftBills(); track $index) {
+                @for (item of bill.items; track item.convID; let i = $index) {
+                  <tr class="hover:bg-gray-50">
+                    @if (i === 0) {
+                      <td
+                        [attr.rowspan]="bill.items.length"
+                        class="border border-gray-800 px-2 py-2 font-semibold align-top"
+                      >
+                        {{ item.visitedDate | shortDate }}
+                      </td>
+                    }
+
+                    <td class="border border-gray-800 px-2 py-2 text-center">
+                      <input type="checkbox" class="w-4 h-4" />
+                    </td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.fromLocation }}</td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.toLocation }}</td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.companyName }}</td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.purpose }}</td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.transportMode }}</td>
+                    <td class="border border-gray-800 px-2 py-2">{{ item.amount }}</td>
+
+                    @if (i === 0) {
+                      <td
+                        [attr.rowspan]="bill.items.length + 1"
+                        class="border border-gray-800 px-2 py-2 font-bold text-center"
+                      ></td>
+                    }
+                  </tr>
+                }
+
+                <tr class="bg-white">
+                  <td
+                    colspan="7"
+                    class="border border-gray-800 px-2 py-1 font-bold text-center italic"
+                  >
+                    Sub Total
+                  </td>
+                  <td class="border border-gray-800 px-2 py-1"></td>
+                </tr>
+              }
+            </tbody>
+
+            <tfoot>
+              <tr class="bg-white">
+                <td
+                  colspan="8"
+                  class="border border-gray-800 px-2 py-2 font-bold text-center italic"
+                >
+                  Grand Total
+                </td>
+                <td class="border border-gray-800 px-2 py-2 font-bold text-center">
+                  {{ calculateTotalAmount() }}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div class="flex justify-center gap-4 mt-7 text-lg">
+            <button
+              class="min-w-48 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg flex items-center justify-around gap-2 font-semibold shadow-md"
+            >
+              <img src="images/Approval.svg" class="h-8" /> Approve
+            </button>
+            <button
+              class="min-w-48 bg-red-400 hover:bg-red-500 text-white py-2 rounded-lg flex items-center justify-around font-semibold shadow-md"
+            >
+              <img src="images/Cancel.svg" class="h-8" />
+              <span>Reject</span>
+            </button>
+          </div>
+
+
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,87 @@
-<p>rejected-bills works!</p>
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <div class="px-6 py-5 flex items-center justify-center mb-4">
+    <div class="flex w-2/6 bg-red-50 items-center justify-around rounded-xl">
+      <span><img class="h-20" src="images/Error.svg" alt="error" /></span>
+      <p class="py-2 text-3xl font-semibold text-red-500">Rejected Bills</p>
+    </div>
+  </div>
+
+  <div>
+    <div class="flex flex-col items-center justify-between mb-4">
+      <div class="rounded-lg border border-gray-200 mb-4">
+        <table class="w-full text-sm text-left table-fixed border border-gray-400">
+          <thead class="bg-gray-100 text-gray-600 font-medium">
+            <tr>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">SL</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Visited Date</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">From</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">To</th>
+              <th class="px-3 py-3 border border-gray-400">Vsited Company</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Purpose</th>
+              <th class="px-3 py-3 border border-gray-400">Mode of Transport</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Amount</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Rejected by</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Comments</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (bill of draftBills(); track $index) {
+              @for (item of bill.items; track item.convID; let i = $index) {
+                <tr class="bg-white hover:bg-gray-50">
+                  <td class="px-3 py-2 text-gray-500 border border-gray-400">{{ i + 1 }}</td>
+
+                  <td class="px-3 py-2 border border-gray-400">
+                    {{ item.visitedDate | shortDate }}
+                  </td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.toLocation }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.fromLocation }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.companyName }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.purpose }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.transportMode }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.amount }}</td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.transportMode }}</td>
+                  <td class="px-3 py-2 border border-gray-400"></td>
+                  <td class="px-3 py-2 border border-gray-400">
+                    <div class="flex ">
+                      <button (click)="editSingleItem(item)">
+                        <img class="h-10 w-10" src="images/Edit.svg" alt="Edit" />
+                      </button>
+                      <button (click)="deleteBill(item.id)">
+                        <img class="h-10 w-10" src="images/Trash.svg" alt="Delete" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+
+          <tfoot class="bg-gray-50">
+            <tr>
+              <td
+                colspan="7"
+                class="px-3 py-3 text-right text-sm font-semibold text-gray-700 border border-gray-400"
+              >
+                Sub Total:
+              </td>
+
+              <td class="px-3 py-3 text-sm font-bold text-gray-800 border border-gray-400">
+                {{ calculateTotalAmount() }}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button
+          class="px-5 py-2 text-base bg-[#67D5B2] text-white rounded-lg hover:bg-[#5aa891] transition"
+        >
+          Submit to the Supervisor
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

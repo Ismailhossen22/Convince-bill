@@ -26,13 +26,14 @@ export interface UserData {
 export interface Bill {
 
   totalAmount: number;
+  subtotal?: number
   items: IConvenceBill[];
   comments?: string;
   rejectionReason?: string;
 }
 
 export interface IConvenceBill {
-  id:string
+  id: string
   visitedDate: string;
   toLocation: string;
   fromLocation: string;
@@ -47,10 +48,17 @@ export interface IConvenceBill {
 }
 
 
+
+
 export enum BillStatus {
-  DRAFT = 1,
-  PENDING = 2,
-  APPROVED = 3,
-  REJECTED = 4,
-  IN_REVIEW = 5
+  Rejected = 1,
+  SentBackToUser = 2,
+  Draft = 3,
+  SentToSupervisor = 4,
+  SentToAdminExecutive = 5,
+  SentToTeamHead = 6,
+  SentToAdminHead = 7,
+  SentToAccountsExecutive = 8,
+  SentToAccountsHead = 9,
+  SentToPayment = 10
 }

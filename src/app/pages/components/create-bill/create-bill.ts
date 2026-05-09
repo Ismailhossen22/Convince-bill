@@ -7,9 +7,8 @@ import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Bill, UserData, } from '../../models/bill.mode';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
-import { it } from 'node:test';
-import { error } from 'node:console';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+
+import { debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 
 
 @Component({
@@ -55,7 +54,7 @@ export class CreateBill implements OnInit {
 
   ngOnInit(): void {
     this.UserForm();
-
+    this.setupCompanyNameListener(0);
     debugger;
     if (this.receivedData) {
       this.isEditMode.set(true);
@@ -127,7 +126,7 @@ export class CreateBill implements OnInit {
       purpose: [''],
       transportMode: [''],
       amount: [0, Validators.required],
-      id:['']
+      id: ['']
 
 
     });
@@ -137,6 +136,10 @@ export class CreateBill implements OnInit {
 
   addRow(): void {
     this.items.push(this.createItem());
+
+    const newIndex = this.items.length - 1;
+    this.setupCompanyNameListener(newIndex);
+
   }
 
   removeRow(i: number): void {
@@ -146,7 +149,7 @@ export class CreateBill implements OnInit {
     }
   }
 
-  // ✅ Holiday check — signal দিয়ে
+  //  Holiday check — signal দিয়ে
   checkHoliday(event: Event): void {
     const date = (event.target as HTMLInputElement).value;
     const day = new Date(date).getDay();
@@ -177,6 +180,7 @@ export class CreateBill implements OnInit {
     const convid = this.editingBill()?.convID || this.generateCustomId(5);
     return {
       ...items,
+      id:convid,
       status: status,
       userRole: "Employee",
       convID: convid
@@ -200,7 +204,7 @@ export class CreateBill implements OnInit {
 
 
     this.items.controls.forEach((_, i) => {
-      const payload = this.buildBillPayload(BillStatus.DRAFT, i);
+      const payload = this.buildBillPayload(BillStatus.Draft, i);
       debugger;
       this.billService.AddBillApi(payload).subscribe({
         next: (res) => {
@@ -237,30 +241,55 @@ export class CreateBill implements OnInit {
   }
 
   suggestions: any[] = [];
+  activeDropdownIndex: number | null = null;
+
+  setupCompanyNameListener(index: number) {
+    const itemFormGroup = this.items.at(index) as FormGroup;
+    const companyControl = itemFormGroup.get('companyName');
+
+    if (!companyControl) return;
+
+    companyControl.valueChanges.pipe(
+      debounceTime(200),
+      map(value => typeof value === 'string' ? value.trim() : ''),
+      distinctUntilChanged(),
+
+      switchMap(query => {
+
+        if (query.length > 1) {
+          return this.billService.getCompanySuggestions(query);
+        }
+        return of([]);
+      })
+    ).subscribe({
+      next: (data) => {
+        this.suggestions = data;
+        this.activeDropdownIndex = index;
+      },
+      error: (err) => {
+        console.error(err);
+        this.suggestions = [];
+      }
+    });
+  }
 
 
-// setupCompanyNameListener(index: number) {
-//   const itemFormGroup = this.items.at(index) as FormGroup;
+  selectCompany(name: string, index: number) {
+    const itemFormGroup = this.items.at(index) as FormGroup;
+    itemFormGroup.patchValue({ companyName: name }, { emitEvent: false });
 
-//   itemFormGroup.get('companyName')?.valueChanges.pipe(
-//     debounceTime(400),
-//     distinctUntilChanged(),
-//     switchMap(value => {
-//       if (typeof value === 'string' && value.length > 1) {
-//         return this.billService.getCompanySuggestions(value);
-//       }
-//       return of([]);
-//     })
-//   ).subscribe(data => {
-//     this.suggestions = data;
-//     this.activeDropdownIndex = index;
-//   });
-// }
+    this.suggestions = [];
+    this.activeDropdownIndex = null;
+  }
 
-selectCompany(name: string) {
-  this.bilform.patchValue({ companyName: name });
-  this.suggestions = []; // ড্রপডাউন বন্ধ করে দেওয়া
-}
+  closeDropdown() {
+
+    setTimeout(() => {
+      this.activeDropdownIndex = null;
+      this.suggestions = [];
+    }, 200);
+  }
+
 
   // ✅ Submit to Supervisor
   submitToSupervisor(): void {
@@ -271,7 +300,7 @@ selectCompany(name: string) {
 
     this.isSubmitting.set(true);
 
-    const payload = this.buildBillPayload(BillStatus.PENDING);
+    const payload = this.buildBillPayload(BillStatus.SentToAccountsExecutive);
 
     // if (this.isEditMode() && this.editingBill()) {
     //   this.billService.updateBill({
@@ -295,16 +324,15 @@ selectCompany(name: string) {
     return `${day}-${month}`;
   }
 
-  hasError(index: number, controlName: string, error: string): boolean {
-    const control = this.items.at(index).get(controlName);
-
-    return !!(control?.hasError(error) && (control?.touched || control?.dirty));
+  hasError(index: number, controlName: string, errorName: string) {
+    const group = this.items.at(index) as FormGroup;
+    const control = group?.get(controlName);
+    return control?.hasError(errorName) && (control?.dirty || control?.touched);
   }
-
-  getControl(index: number, controlName: string): string {
-    return this.items.at(index).get(controlName)?.value ?? '';
+  getControl(index: number, controlName: string) {
+    const group = this.items.at(index) as FormGroup;
+    return group?.get(controlName)?.value;
   }
-
 
   clearDate(index: number): void {
     this.items.at(index).get('visitedDate')?.setValue('');
