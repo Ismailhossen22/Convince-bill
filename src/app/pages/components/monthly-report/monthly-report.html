@@ -1,0 +1,171 @@
+<div class="max-w-7xl mx-auto px-4 py-6">
+  <div class="px-6 py-5 flex flex-col items-center justify-center mb-4 font-stretch-extra-expanded">
+    <h2 class="w-3/5 py-5 rounded-xl text-3xl/8 text-center font-semibold text-gray-800">
+      Monthly Convenyance Bill Overall Report
+    </h2>
+    <p class="text-base">January 1,2026 To January 4,2026</p>
+  </div>
+
+  <div class="w-full">
+    <div class="flex items-center justify-center p-4">
+      <div
+        class="w-3/4 bg-white border border-gray-200 rounded-lg shadow-sm p-6 flex flex-col md:flex-row items-end md:items-center gap-6"
+      >
+        <div class="space-y-8 w-full p-4 flex flex-col items-center text-base/8">
+          <div class="flex items-center justify-between gap-4 w-full">
+            <div class="grow flex items-center gap-4">
+              <label class="text-base font-bold text-gray-700 whitespace-nowrap">From:</label>
+              <input
+                type="date"
+                class="w-full px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all"
+              />
+            </div>
+            <div class="grow flex items-center gap-4">
+              <label class="text-base font-bold text-gray-700 whitespace-nowrap">From:</label>
+              <input
+                type="date"
+                class="w-full px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all"
+              />
+            </div>
+
+            <div class="grow flex items-center gap-2">
+              <label class="text-base font-bold text-gray-700 whitespace-nowrap">Status:</label>
+              <input
+                type="text"
+                class="w-full px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-3 w-full">
+            <div class="flex items-center gap-2 w-full">
+              <label class="text-base font-bold text-gray-700 whitespace-nowrap">
+                Department:
+              </label>
+              <input
+                type="text"
+                class="grow px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all"
+              />
+            </div>
+
+            <div class="flex items-center gap-2 w-full">
+              <label class="text-base font-bold text-gray-700">Employee Name:</label>
+              <input
+                type="text"
+                class="grow px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all"
+              />
+            </div>
+          </div>
+
+          <div class="">
+            <button
+              class="grow text-base bg-[#57c3f1] hover:bg-[#37b7ee] text-white font-bold py-3 px-15 rounded-xl shadow-md transition-colors duration-200"
+            >
+              Preview
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full flex flex-col items-center mb-4">
+      <!-- Bill Items Table -->
+      <div class="rounded-lg border border-gray-200 mb-4 w-full">
+        <div class="w-full overflow-x-auto border border-gray-300 rounded-lg p-4">
+          <table class="w-full min-w-max border-collapse text-sm text-center">
+            <thead class="bg-gray-100 sticky top-0">
+              <tr>
+                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">SL.</th>
+
+                <th
+                  class="border border-gray-300 px-4 py-3 font-bold text-gray-800 sticky left-0 bg-white z-10"
+                >
+                  Employee ID
+                </th>
+                <th
+                  class="border border-gray-300 px-4 py-3 font-bold text-gray-800 sticky left-20 bg-white z-10"
+                >
+                  Employee Name
+                </th>
+
+                <th
+                  class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800 bg-yellow-400"
+                >
+                  2-jan
+                </th>
+                <th class=" min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800">3-jan</th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800 bg-[#57c3f1]">
+                  4-jan
+                </th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800">5-jan</th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800 bg-yellow-400">
+                  2-jan
+                </th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800">3-jan</th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800 bg-[#57c3f1]">
+                  4-jan
+                </th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800">5-jan</th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800">5-jan</th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800 bg-yellow-400">
+                  2-jan
+                </th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800">3-jan</th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800 bg-[#57c3f1]">
+                  4-jan
+                </th>
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800">5-jan</th>
+
+                <th class="min-w-20 border border-gray-300 px-4 py-3 font-bold text-gray-800">Total Bill</th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-300">
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="border border-gray-300 px-4 py-3">1</td>
+                <td class="border border-gray-300 px-4 py-3 font-bold sticky left-0 bg-white z-10">
+                  1160
+                </td>
+                <td class="border border-gray-300 px-4 py-3 sticky left-20 bg-white z-10">
+                  Ruhama
+                </td>
+                <td class="border border-gray-300 px-4 py-3">599</td>
+                <td class="border border-gray-300 px-4 py-3">280</td>
+                <td class="border border-gray-300 px-4 py-3">190</td>
+                <td class="border border-gray-300 px-4 py-3">600</td>
+
+                <td class="border border-gray-300 px-4 py-3">260</td>
+              </tr>
+
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="border border-gray-300 px-4 py-3">2</td>
+
+                <td class="border border-gray-300 px-4 py-3 font-bold">1196</td>
+                <td class="border border-gray-300 px-4 py-3">Nayan</td>
+                <td class="border border-gray-300 px-4 py-3">599</td>
+                <td class="border border-gray-300 px-4 py-3">280</td>
+                <td class="border border-gray-300 px-4 py-3">190</td>
+                <td class="border border-gray-300 px-4 py-3">600</td>
+
+                <td class="border border-gray-300 px-4 py-3">190</td>
+              </tr>
+
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="border border-gray-300 px-4 py-3">3</td>
+
+                <td class="border border-gray-300 px-4 py-3 font-bold">1198</td>
+                <td class="border border-gray-300 px-4 py-3">Shourav</td>
+                <td class="border border-gray-300 px-4 py-3">599</td>
+                <td class="border border-gray-300 px-4 py-3">280</td>
+                <td class="border border-gray-300 px-4 py-3">190</td>
+                <td class="border border-gray-300 px-4 py-3">600</td>
+
+                <td class="border border-gray-300 px-4 py-3">290</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

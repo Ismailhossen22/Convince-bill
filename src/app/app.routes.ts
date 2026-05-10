@@ -7,6 +7,8 @@ import { BillTracking } from './pages/components/bill-tracking/bill-tracking';
 import { ApprovalDashboard } from './pages/components/approval-dashboard/approval-dashboard';
 import { ApprovalHistory } from './pages/components/approval-history/approval-history';
 import { SuccessPage } from './pages/components/success-page/success-page';
+import { MonthlyReport } from './pages/components/monthly-report/monthly-report';
+import { ApprovalDashboardDetails } from './pages/components/approval-dashboard-details/approval-dashboard-details';
 
 
 export const routes: Routes = [
@@ -19,15 +21,10 @@ export const routes: Routes = [
     { path: 'rejected-bills', component: RejectedBills },
     { path: 'bill-tracking', component: BillTracking },
     { path: 'approval-dashboard', component: ApprovalDashboard },
+    { path: 'dashboard-details', component: ApprovalDashboardDetails },
     { path: 'approval-history', component: ApprovalHistory },
-    //{ path: 'monthly-report', component: MonthlyReport},
+    { path: 'monthly-report', component: MonthlyReport },
     { path: 'success', component: SuccessPage },
-
     { path: '**', redirectTo: 'login', pathMatch: 'full' },
-
-
-
-
-
 
 ];

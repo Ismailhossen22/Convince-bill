@@ -1,14 +1,13 @@
-import { BillStatus, IConvenceBill } from './../../models/bill.mode';
-
+import { BillStatus, IConvenceBill, UserInfo } from './../../models/bill.mode';
 import { Component, computed, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BillService } from '../../services/bill.service';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Bill, UserData, } from '../../models/bill.mode';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
-
 import { debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
+import { AuthService } from '../../../features/services/AuthService';
+
 
 
 @Component({
@@ -21,9 +20,10 @@ export class CreateBill implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private readonly fb = inject(FormBuilder);
   private readonly billService = inject(BillService);
+  AuthService = inject(AuthService)
   private readonly router = inject(Router);
   isLoading = signal<boolean>(false);
-  userInfo = signal<UserData | null>(null);
+  userInfo = signal<UserInfo | null>(null);
   usrform!: FormGroup;
   isHoliday = signal<boolean>(false);
   isEditMode = signal<boolean>(false);
@@ -32,8 +32,6 @@ export class CreateBill implements OnInit {
 
 
   itemSignal = signal<any[]>([]);
-
-
   totalAmount = computed(() =>
     this.itemSignal().reduce(
       (sum, item) => sum + (+item.amount || 0), 0
@@ -44,18 +42,17 @@ export class CreateBill implements OnInit {
   purposes = ['Client Meeting', 'Office Work', 'Field Visit'];
 
   private receivedData: IConvenceBill | null = null;
+  currentUser = this.AuthService.currentUser;
 
   constructor() {
-    this.UserForm();
-
     const navigation = this.router.currentNavigation();
     this.receivedData = navigation?.extras.state?.['billData'] as IConvenceBill;
   }
 
   ngOnInit(): void {
-    this.UserForm();
+
     this.setupCompanyNameListener(0);
-    debugger;
+
     if (this.receivedData) {
       this.isEditMode.set(true);
       // this.editingBill.set(this.bill);
@@ -75,15 +72,7 @@ export class CreateBill implements OnInit {
   }
 
 
-  private UserForm(): void {
-    this.usrform = this.fb.group({
-      name: ['Md. Afsob Islam Nayan'],
-      contacNo: ['01712345678'],
-      designation: ['Director Technology and Product'],
-      submitDate: [new Date().toLocaleDateString('en-GB')],
-    });
-    this.userInfo.set(this.usrform.value);
-  }
+
 
   private loadFromApi(): void {
     this.isLoading.set(true);
@@ -180,7 +169,7 @@ export class CreateBill implements OnInit {
     const convid = this.editingBill()?.convID || this.generateCustomId(5);
     return {
       ...items,
-      id:convid,
+      id: this.currentUser()?.userId,
       status: status,
       userRole: "Employee",
       convID: convid

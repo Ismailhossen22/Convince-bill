@@ -1,18 +1,20 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Bill, IConvenceBill } from '../../models/bill.mode';
+import { AuthService } from '../../../features/services/AuthService';
 import { BillService } from '../../services/bill.service';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../features/services/AuthService';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
 
 @Component({
-  selector: 'app-approval-history',
+  selector: 'app-approval-dashboard-details',
   imports: [ShortDatePipe],
-  templateUrl: './approval-history.html',
-  styleUrl: './approval-history.css',
+  templateUrl: './approval-dashboard-details.html',
+  styleUrl: './approval-dashboard-details.css',
 })
-export class ApprovalHistory {
-  
+export class ApprovalDashboardDetails {
+
+
+
   private billService = inject(BillService);
   private readonly AuthService = inject(AuthService)
   private router = inject(Router)

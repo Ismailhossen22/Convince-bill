@@ -1,37 +1,56 @@
 <div class="min-h-screen bg-gray-100 flex items-center justify-center">
-    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
-        <form #loginFormEl (submit)="login($event, loginFormEl)" novalidate>
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold">Email Address
-                    <input type="email" #emailInput
-                        class="{{loginForm.email().touched() && loginForm.email().invalid() ? 'border-red-300' : 'border-gray-300'}} shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        [formField]="loginForm.email">
-                </label>
-                @if(loginForm.email().touched() && loginForm.email().errors()){
-                <ul class="error-messages">
-                    @for (error of loginForm.email().errors(); track error.message) {
-                    <li class="text-red-500 text-xs italic">{{error.message}}</li>
-                    }
-                </ul>
-                }
-            </div>
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold">Password
-                    <input type="password" #passwordInput
-                        class="{{loginForm.password().touched() && loginForm.password().invalid() ? 'border-red-300' : 'border-gray-300'}} shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        [formField]="loginForm.password" aria-describedby="passwordHelp">
-                </label>
-                @if(loginForm.password().touched() && loginForm.password().errors()){
-                @for (error of loginForm.password().errors(); track error.formField) {
-                <div class="text-red-500 text-xs italic">{{error.message}}</div>
-                }
-                }
-            </div>
-            <div class="flex items-center justify-between">
-                <button type="submit"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Login</button>
-            </div>
-        </form>
-    </div>
+  <div class="p-8 rounded shadow-md w-2/3 lg:w-2/5">
+    <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+
+    <form class="" [formGroup]="loginForm" #loginFormEl (submit)="login($event, loginFormEl)" novalidate>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold"
+          >User ID
+          <input
+            type="number"
+            formControlName="userId"
+            class="{{
+              loginForm.get('userId')?.touched && loginForm.get('userId')?.invalid
+                ? 'border-red-500'
+                : 'border-gray-300'
+            }} shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="Enter User ID"
+          />
+        </label>
+
+        @if (loginForm.get('userId')?.touched && loginForm.get('userId')?.errors) {
+          <div class="text-red-500 text-xs italic mt-1">User ID is Requrar!</div>
+        }
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold"
+          >Password
+          <input
+            type="password"
+            formControlName="password"
+            class="{{
+              loginForm.get('password')?.touched && loginForm.get('password')?.invalid
+                ? 'border-red-500'
+                : 'border-gray-300'
+            }} shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            placeholder="******************"
+          />
+        </label>
+
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors) {
+          <div class="text-red-500 text-sm italic mt-1">Password is Requrard!</div>
+        }
+      </div>
+
+      <div class="flex items-center justify-between">
+        <button
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+        >
+          Login
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

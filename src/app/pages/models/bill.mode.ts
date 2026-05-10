@@ -1,35 +1,23 @@
-// models/bill.model.ts
-// export interface BillItem {
-//   visitedDate: string;
-//   toLocation: string;
-//   fromLocation: string;
-//   purpose: string;
-//   transportMode: string;
-//   companyName: string;
-//   userId: string;
-//   amount: number;
-//   status: number;
-//   convID: string;
-//   userRole: string | null;
 
-
-// }
-
-export interface UserData {
-  userId: string;
-  name: string;
-  contacNo: string;
-  designation: string;
+export interface UserInfo {
+  userId?: number;
+  password?: string;
+  name?: string;
+  contacNo?: string;
+  designation?: string;
   submitDate?: string;
+  department?:string;
+  group?:string
 
 }
+
 export interface Bill {
 
   totalAmount: number;
-  subtotal?: number
+  subtotal?: number;
   items: IConvenceBill[];
   comments?: string;
-  rejectionReason?: string;
+  rejectReason?: string;
 }
 
 export interface IConvenceBill {

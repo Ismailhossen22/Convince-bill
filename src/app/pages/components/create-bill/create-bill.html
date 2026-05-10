@@ -17,35 +17,35 @@
           Holiday List
         </button>
       </div>
-      @if (userInfo()) {
+      @if (AuthService.currentUser();as user) {
         <div class="border border-gray-200 rounded-lg overflow-hidden w-3/5">
           <table class="w-full text-sm">
             <tbody class="divide-y divide-gray-300">
               <tr>
                 <td class="px-4 py-3 font-medium text-gray-600 w-1/2">Name</td>
                 <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                  {{ userInfo()!.name }}
+                  {{ user.name }}
                 </td>
               </tr>
 
               <tr>
                 <td class="px-4 py-3 font-medium text-gray-600">Contact No</td>
                 <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                  {{ userInfo()!.contacNo }}
+                  {{ user.contacNo }}
                 </td>
               </tr>
 
               <tr>
                 <td class="px-4 py-3 font-medium text-gray-600">Date of Submission</td>
                 <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                  {{ userInfo()!.submitDate }}
+                  {{ user.submitDate }}
                 </td>
               </tr>
 
               <tr>
                 <td class="px-4 py-3 font-medium text-gray-600">Supervisor's Designation</td>
                 <td class="px-4 py-3 text-gray-800 border-l border-gray-300">
-                  {{ userInfo()!.designation }}
+                  {{ user.designation }}
                 </td>
               </tr>
             </tbody>

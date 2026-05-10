@@ -1,48 +1,70 @@
 import { Component, inject, signal } from '@angular/core';
-import { LoginData } from '../../shared/class/login_data';
-import { debounce, form, FormField, pattern, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
+import { UserInfo } from '../../pages/models/bill.mode';
+import { HttpClient } from '@angular/common/http';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../services/AuthService';
 
 @Component({
   selector: 'app-login',
-  imports: [FormField],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
   private readonly router = inject(Router);
-  userInfo = signal<LoginData>({
-    email: '',
-    password: ''
-  });
+  private http = inject(HttpClient)
+  private authService = inject(AuthService);
+  private url = 'json/user.json'
 
-  loginForm = form(this.userInfo, (schemaPath) => {
-    debounce(schemaPath.email, 200);
-    debounce(schemaPath.password, 200);
-    required(schemaPath.email, { message: 'Email is required' });
-    pattern(schemaPath.email, /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, { message: 'Email is invalid' });
-    required(schemaPath.password, { message: 'Password is required' });
+
+
+  loginForm = new FormGroup({
+    userId: new FormControl([Validators.required]),
+    password: new FormControl('', [Validators.required])
   });
 
   login(e: Event, formEl: HTMLFormElement) {
-    debugger
     e.preventDefault();
-    this.markFormGroupTouched(this.loginForm);
-    console.log(this.loginForm().value());
-    console.log(this.userInfo());
-    if (this.loginForm().invalid()) {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
       formEl.reportValidity();
       return;
     }
-    this.router.navigate(['/navbar'], { state: { userInfo: this.loginForm().value() } });
-  }
 
-  private markFormGroupTouched(form: any) {
-    Object.values(this.loginForm).forEach((field: any) => {
-      if (typeof field === 'function' && field().markAsTouched) {
-        field().markAsTouched();
+
+    const loginCredentials = this.loginForm.value;
+
+
+    this.http.get<UserInfo[]>(this.url).subscribe({
+      next: (users) => {
+
+        const authenticatedUser = users.find(u =>
+          u.userId === Number(loginCredentials.userId) &&
+          u.password === loginCredentials.password
+        );
+
+        if (authenticatedUser) {
+          console.log("লগইন সফল হয়েছে!");
+
+          this.authService.setUser(authenticatedUser)
+
+          this.router.navigate(['/navbar']);
+        } else {
+
+          alert("Wrong UserId or password!");
+        }
+      },
+      error: (err) => {
+        console.error("ডাটা লোড করতে সমস্যা হয়েছে:", err);
+
       }
     });
-    
   }
+
+
+
+
+
+
 }

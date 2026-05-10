@@ -8,11 +8,19 @@ import { map, Observable, tap } from 'rxjs';
 
 export class BillService {
 
-
   private readonly http = inject(HttpClient)
   // private apiUrl = 'json/convence-bill.json';
 
   private apiUrl = 'http://localhost:3000/bills';
+  private getApprovalUrl = 'https://localhost:7226/Conveyance/GetApproval';
+  private getApprovalDetailsUrl = 'https://localhost:7226/Conveyance/GetApprovalDetails';
+  private getBillTrackingUrl = 'https://localhost:7226/Conveyance/GetBillTracking';
+  private getVisitsUrl = 'https://localhost:7226/Conveyance/GetVisits';
+  private UpdateStatusUrl = 'https://localhost:7226/Conveyance/UpdateStatus';
+  private edibillUrl = 'https://localhost:7226/Conveyance/EditBill';
+  private deleteBillingUrl = 'https://localhost:7226/Conveyance/DeleteBilling';
+  private createbillUrl = 'https://localhost:7174/Conveyance/CreateBilling'
+
 
   private billinfo = signal<IConvenceBill[]>([]);
 

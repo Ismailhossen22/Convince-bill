@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BillService } from '../../services/bill.service';
 import { Bill, IConvenceBill } from '../../models/bill.mode';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
+import { AuthService } from '../../../features/services/AuthService';
 
 @Component({
   selector: 'app-approval-dashboard',
@@ -13,7 +14,7 @@ import { ShortDatePipe } from '../../pipes/short-data.pipe';
 export class ApprovalDashboard implements OnInit {
 
   private billService = inject(BillService);
-
+  private readonly AuthService = inject(AuthService)
   private router = inject(Router)
   selectedDate = signal<string>('');
   draftBills = this.billService.draftBills;
@@ -23,8 +24,7 @@ export class ApprovalDashboard implements OnInit {
     this.loadData();
   }
 
-
-
+  CurrentUsr = this.AuthService.currentUser;
 
   filteredApprovedBills = computed(() => {
     const date = this.selectedDate();
@@ -80,5 +80,17 @@ export class ApprovalDashboard implements OnInit {
   //   this.billService.updateBill({ ...bill, status: 2 });
   //   this.router.navigate(['/success']);
   // }
+
+
+
+
+
+
+
+
+
+
+
+  
 
 }
