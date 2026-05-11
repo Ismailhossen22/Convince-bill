@@ -21,7 +21,6 @@ export interface Bill {
 }
 
 export interface IConvenceBill {
-  id: string
   visitedDate: string;
   toLocation: string;
   fromLocation: string;
@@ -33,6 +32,7 @@ export interface IConvenceBill {
   status: number;
   convID: string;
   userRole: string | null;
+  currentStatus: number;
 }
 
 

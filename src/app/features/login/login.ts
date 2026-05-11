@@ -20,10 +20,9 @@ export class Login {
 
 
   loginForm = new FormGroup({
-    userId: new FormControl([Validators.required]),
+    userId: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required])
-  });
-
+  })
   login(e: Event, formEl: HTMLFormElement) {
     e.preventDefault();
     if (this.loginForm.invalid) {

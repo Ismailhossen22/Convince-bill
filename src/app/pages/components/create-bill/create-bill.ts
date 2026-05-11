@@ -65,36 +65,13 @@ export class CreateBill implements OnInit {
       this.itemSignal.set(val);
     });
 
-    if (isPlatformBrowser(this.platformId)) {
-      this.loadFromApi();
-    }
+
 
   }
 
 
 
 
-  private loadFromApi(): void {
-    this.isLoading.set(true);
-
-    this.billService.getUserData('123').subscribe({
-      next: (data) => {
-        this.usrform.patchValue({
-          name: data.name,
-          contacNo: data.contacNo,
-          designation: data.designation,
-          submitDate: data.submitDate
-        });
-
-        this.userInfo.set(this.usrform.value);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error:', err);
-        this.isLoading.set(false);
-      }
-    });
-  }
 
 
   bilform: FormGroup = this.fb.group({
@@ -115,7 +92,7 @@ export class CreateBill implements OnInit {
       purpose: [''],
       transportMode: [''],
       amount: [0, Validators.required],
-      id: ['']
+      convID: ['']
 
 
     });
@@ -144,17 +121,12 @@ export class CreateBill implements OnInit {
     const day = new Date(date).getDay();
     this.isHoliday.set(day === 5 || day === 6);
   }
-
-
-
-
   // private loadBillData(bill: Bill): void {
   //   this.items.clear();
   //   bill.items?.forEach(item => {
   //     this.items.push(this.fb.group(item));
   //   });
   //   this.itemSignal.set(this.items.value);
-
   // }
 
   patchSingleRow(data: IConvenceBill) {
@@ -163,16 +135,16 @@ export class CreateBill implements OnInit {
     }
   }
 
-  // ✅ Build bill object — DRY
+  //  Build bill object — DRY
   private buildBillPayload(status: BillStatus, index: number = 0): IConvenceBill {
     const items = this.items.at(index).value;
-    const convid = this.editingBill()?.convID || this.generateCustomId(5);
+    // const convid = this.editingBill()?.convID || this.generateCustomId(5);
     return {
       ...items,
-      id: this.currentUser()?.userId,
+      userId: this.currentUser()?.userId,
       status: status,
-      userRole: "Employee",
-      convID: convid
+      userRole: this.currentUser()?.designation,
+
     };
   }
 
@@ -184,7 +156,7 @@ export class CreateBill implements OnInit {
     }
     return result;
   }
-  // ✅ Save Draft
+  //  Save Draft
   saveDraft(): void {
     if (this.bilform.invalid) {
       this.bilform.markAllAsTouched();
@@ -197,6 +169,7 @@ export class CreateBill implements OnInit {
       debugger;
       this.billService.AddBillApi(payload).subscribe({
         next: (res) => {
+          debugger;
           console.log(`Item ${i + 1} saved:`, res);
 
           if (i === this.items.length - 1) {
@@ -209,17 +182,32 @@ export class CreateBill implements OnInit {
   }
 
   editBill() {
+     debugger;
     if (this.bilform.invalid) {
       this.bilform.markAllAsTouched();
       return;
     }
     const formData = this.items.value;
-    debugger;
+    const user = this.AuthService.currentUser();
     formData.forEach((item: IConvenceBill) => {
+      const payload = {
+        convID: item.convID,
+        fromLocation: item.fromLocation,
+        toLocation: item.toLocation,
+        totalAmount: item.amount.toString(),
+        updatedByUID: user?.userId || item.userId,
+        ctid: "",
+        cP_ID: "",
+        companyName: item.companyName,
+        transportDate: item.visitedDate,
+        transportPurpose: item.purpose,
+        transportMode: item.transportMode
+      };
+      
 
-      this.billService.updateBillApi(item).subscribe({
+      this.billService.editBillApi(payload).subscribe({
         next: (item) => {
-          console.log(item.id)
+        console.log('Update Success for:', item.convID);
           this.router.navigate(['/draft-bills']);
         }, error: (err) => console.error('Update failed:', err)
       })
@@ -244,7 +232,7 @@ export class CreateBill implements OnInit {
       distinctUntilChanged(),
 
       switchMap(query => {
-
+        debugger;
         if (query.length > 1) {
           return this.billService.getCompanySuggestions(query);
         }

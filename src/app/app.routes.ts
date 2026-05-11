@@ -25,6 +25,10 @@ export const routes: Routes = [
     { path: 'approval-history', component: ApprovalHistory },
     { path: 'monthly-report', component: MonthlyReport },
     { path: 'success', component: SuccessPage },
+    {
+        path: 'comment', loadComponent: () => import('./pages/components/comment/comment').then(m => m.Comment), pathMatch: 'full'
+
+    },
     { path: '**', redirectTo: 'login', pathMatch: 'full' },
 
 ];

@@ -13,8 +13,6 @@ import { ShortDatePipe } from '../../pipes/short-data.pipe';
 })
 export class ApprovalDashboardDetails {
 
-
-
   private billService = inject(BillService);
   private readonly AuthService = inject(AuthService)
   private router = inject(Router)
@@ -23,7 +21,8 @@ export class ApprovalDashboardDetails {
   billSignal = signal<Bill[]>([]);
 
   ngOnInit() {
-    this.loadData();
+   
+    this.loadApprovalDetails()
   }
 
   CurrentUsr = this.AuthService.currentUser;
@@ -39,15 +38,64 @@ export class ApprovalDashboardDetails {
   });
 
 
-  loadData() {
-    this.billService.getBills().subscribe({
-      next: (transformedData) => {
-        debugger;
-        this.billSignal.set(transformedData);
+  loadApprovalDetails() {
+    const date = '2026-05-11';
+    const uid = '101';
+    const role = '';
+    const status = '3';
+
+    this.billService.getApprovalDetails(date, uid, role, status).subscribe({
+      next: (data: any) => {
+        console.log('Approval Details:', data);
+
+        const rawItems = data.message || [];
+
+        
+        const mappedItems: IConvenceBill[] = rawItems.map((item: any) => ({
+          visitedDate: item.visitedDate, 
+          toLocation: item.toLocation,
+          fromLocation: item.fromLocation,
+          purpose: item.purpose,
+          transportMode: item.transportMode,
+          companyName: item.companyName,
+          userId: item.userId,
+          amount: item.amount,
+          status: item.status,
+          convID: item.convID || "",
+          userRole: role,
+          currentStatus: item.currentStatus
+        }));
+
+       
+       const total = mappedItems.reduce((sum, item) => sum + item.amount, 0);
+        const finalBill: Bill = {
+          totalAmount: total,
+          subtotal: total,
+          items: mappedItems,
+          comments: "",
+          rejectReason: ""
+        };
+
+        
+        this.billSignal.set([finalBill]);
       },
-      error: (err) => console.error(err)
+      error: (err) => console.error('Error fetching details:', err)
     });
+
+
   }
+
+
+
+  // loadData() {
+  //   this.billService.getBills().subscribe({
+  //     next: (transformedData) => {
+  //       debugger;
+  //       this.billSignal.set(transformedData);
+  //     },
+  //     error: (err) => console.error(err)
+  //   });
+  // }
 
 
 

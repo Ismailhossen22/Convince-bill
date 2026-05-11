@@ -1,1 +1,108 @@
-<p>bill-tracking works!</p>
+<div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="px-6 py-5 flex items-center justify-center mb-4">
+        <h2 class="w-3/5 py-5 rounded-xl bg-[#cfcfc6] text-2xl text-center font-semibold text-gray-800">
+            Bill Tracking
+        </h2>
+    </div>
+
+    <div class="w-full">
+        <div class="flex items-center justify-center p-4">
+            <div class="w-3/4 bg-white rounded-lg p-6 flex flex-col md:flex-row items-end md:items-center gap-6">
+                <div class="space-y-8 w-full p-4">
+                    <div class="flex items-center justify-around gap-4">
+                        <div class="w-1/2 text-base text-gray-600">
+                            <input type="text" placeholder="Search the Visited company.."
+                                class="placeholder:text-gray-500 w-full px-3 py-3 border border-gray-400 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all" />
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4">
+                            <button type="button"
+                                class="whitespace-nowrap flex items-center gap-2 px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-xl transition-colors duration-200">
+                                <img class="h-10" src="images/Filter.svg" alt="filter" />
+                                This month
+                            </button>
+
+                            <button type="button"
+                                class="flex items-center whitespace-nowrap gap-2 px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-xl transition-colors duration-200">
+                                <img class="h-10" src="images/Filter.svg" alt="filter" >
+                                All Statuses
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full flex flex-col items-center mb-4">
+            <div class="rounded-lg border border-gray-200 mb-4 w-full">
+                <div class="overflow-x-auto p-4">
+                    <table class="w-full border-collapse border border-gray-300 text-sm text-center">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">SL.</th>
+
+                                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">
+                                    Visited Date
+                                </th>
+                                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">Form</th>
+                                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">To</th>
+                                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">
+                                    Visited Company
+                                </th>
+                                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">Purpose</th>
+                                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">
+                                    Made of Transport
+                                </th>
+                                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">Amount</th>
+                                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">
+                                    Current Status
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-gray-300">
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="border border-gray-300 px-4 py-3">1</td>
+
+                                <td class="border border-gray-300 px-4 py-3 font-bold">1160</td>
+                                <td class="border border-gray-300 px-4 py-3">Ruhama</td>
+                                <td class="border border-gray-300 px-4 py-3">1-Jan</td>
+                                <td class="border border-gray-300 px-4 py-3">260</td>
+                                <td class="border border-gray-300 px-4 py-3 font-bold">1160</td>
+                                <td class="border border-gray-300 px-4 py-3">Ruhama</td>
+                                <td class="border border-gray-300 px-4 py-3">1-Jan</td>
+                                <td class="border border-gray-300 px-4 py-3">Reject</td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="border border-gray-300 px-4 py-3">2</td>
+
+                                <td class="border border-gray-300 px-4 py-3 font-bold">1196</td>
+                                <td class="border border-gray-300 px-4 py-3">Nayan</td>
+                                <td class="border border-gray-300 px-4 py-3">2-Jan</td>
+                                <td class="border border-gray-300 px-4 py-3">190</td>
+                                <td class="border border-gray-300 px-4 py-3 font-bold">1160</td>
+                                <td class="border border-gray-300 px-4 py-3">Ruhama</td>
+                                <td class="border border-gray-300 px-4 py-3">1-Jan</td>
+                                <td class="border border-gray-300 px-4 py-3">Approved</td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="border border-gray-300 px-4 py-3">3</td>
+
+                                <td class="border border-gray-300 px-4 py-3 font-bold">1198</td>
+                                <td class="border border-gray-300 px-4 py-3">Shourav</td>
+                                <td class="border border-gray-300 px-4 py-3">3-Jan</td>
+                                <td class="border border-gray-300 px-4 py-3">290</td>
+                                <td class="border border-gray-300 px-4 py-3 font-bold">1160</td>
+                                <td class="border border-gray-300 px-4 py-3">Ruhama</td>
+                                <td class="border border-gray-300 px-4 py-3">1-Jan</td>
+                                <td class="border border-gray-300 px-4 py-3">Paid</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

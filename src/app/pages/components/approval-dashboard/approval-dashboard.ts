@@ -4,10 +4,11 @@ import { BillService } from '../../services/bill.service';
 import { Bill, IConvenceBill } from '../../models/bill.mode';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
 import { AuthService } from '../../../features/services/AuthService';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-approval-dashboard',
-  imports: [ShortDatePipe],
+  imports: [],
   templateUrl: './approval-dashboard.html',
   styleUrl: './approval-dashboard.css',
 })
@@ -21,7 +22,8 @@ export class ApprovalDashboard implements OnInit {
   billSignal = signal<Bill[]>([]);
 
   ngOnInit() {
-    this.loadData();
+    //this.loadData();
+    this.loadApprovalDetails()
   }
 
   CurrentUsr = this.AuthService.currentUser;
@@ -37,15 +39,63 @@ export class ApprovalDashboard implements OnInit {
   });
 
 
-  loadData() {
-    this.billService.getBills().subscribe({
-      next: (transformedData) => {
-        debugger;
-        this.billSignal.set(transformedData);
+
+  loadApprovalDetails() {
+    const from = "2026-05-09";
+    const to = "2026-05-11";
+    const userRole = "admin";
+    const statusId = 3;
+    const uid = "101";
+
+    this.billService.getApproval(from, to, userRole, statusId, uid).subscribe({
+      next: (data: any) => {
+        console.log('Approval Bill:', data);
+
+        const rawItems = data.message || [];
+
+
+        const mappedItems: IConvenceBill[] = rawItems.map((item: any) => ({
+          visitedDate: item.visitedDate,
+          toLocation: item.toLocation,
+          fromLocation: item.fromLocation,
+          purpose: item.purpose,
+          transportMode: item.transportMode,
+          companyName: item.companyName,
+          userId: item.userId,
+          amount: item.amount,
+          status: item.status,
+          convID: item.convID || "",
+          userRole: item.Role,
+          currentStatus: item.currentStatus
+        }));
+
+
+        const total = mappedItems.reduce((sum, item) => sum + item.amount, 0);
+        const finalBill: Bill = {
+          totalAmount: total,
+          subtotal: total,
+          items: mappedItems,
+          comments: "",
+          rejectReason: ""
+        };
+
+
+        this.billSignal.set([finalBill]);
       },
-      error: (err) => console.error(err)
+      error: (err) => console.error('Error fetching details:', err)
     });
+
+
   }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -91,6 +141,6 @@ export class ApprovalDashboard implements OnInit {
 
 
 
-  
+
 
 }
