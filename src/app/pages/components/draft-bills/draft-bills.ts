@@ -24,19 +24,20 @@ export class DraftBills implements OnInit {
   private router = inject(Router)
 
   draftBills = this.billService.draftBills;
-  constructor(){
-    effect(()=>{
 
-      this.draftBills() 
+  constructor() {
+    effect(() => {
+
+      this.draftBills()
     })
   }
 
   ngOnInit(): void {
-    this.getBillsFromServer()
+    this.getDraftBills()
 
   }
 
-  getBillsFromServer() {
+  getDraftBills() {
     const user = this.AuthService.currentUser;
     const userId = 101;
 
@@ -72,7 +73,7 @@ export class DraftBills implements OnInit {
 
 
   calculateTotalAmount = computed(() =>
-    this.draftBills().reduce((sum, bill) => sum + bill.totalAmount, 0)
+    this.draftBills().reduce((sum, bill) => sum + (bill.totalAmount ?? 0), 0)
   );
 
   // calculateTotalAmounts = computed(() => {
@@ -89,13 +90,15 @@ export class DraftBills implements OnInit {
 
 
   editSingleItem(item: IConvenceBill) {
+    debugger;
     this.router.navigate(['/create-bill'], { state: { billData: item } });
   }
 
-  deleteBill(Id: string) {
+  deleteBill(convID: number, ctid: number) {
     debugger;
+
     if (confirm("Are you sure want to delete this bill?")) {
-      this.billService.deleteBill(Id).subscribe({
+      this.billService.deleteBill(convID, ctid).subscribe({
         next: () => {
           alert('Deleted successfully!')
         }, error: (err) => console.error(err)

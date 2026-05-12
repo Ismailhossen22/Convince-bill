@@ -21,7 +21,7 @@ export class ApprovalDashboardDetails {
   billSignal = signal<Bill[]>([]);
 
   ngOnInit() {
-   
+
     this.loadApprovalDetails()
   }
 
@@ -33,16 +33,16 @@ export class ApprovalDashboardDetails {
     if (!date) return allBills;
 
     return allBills.filter(bill =>
-      bill.items.some(item => item.visitedDate.startsWith(date))
+      bill.items.some(item => item.visitedDate?.startsWith(date))
     );
   });
 
 
   loadApprovalDetails() {
-    const date = '2026-05-11';
-    const uid = '101';
-    const role = '';
-    const status = '3';
+    const date = '2026-05-12';
+    const uid = 101;
+    const role = 'admin';
+    const status = 3;
 
     this.billService.getApprovalDetails(date, uid, role, status).subscribe({
       next: (data: any) => {
@@ -50,9 +50,9 @@ export class ApprovalDashboardDetails {
 
         const rawItems = data.message || [];
 
-        
+
         const mappedItems: IConvenceBill[] = rawItems.map((item: any) => ({
-          visitedDate: item.visitedDate, 
+          visitedDate: item.visitedDate,
           toLocation: item.toLocation,
           fromLocation: item.fromLocation,
           purpose: item.purpose,
@@ -66,8 +66,8 @@ export class ApprovalDashboardDetails {
           currentStatus: item.currentStatus
         }));
 
-       
-       const total = mappedItems.reduce((sum, item) => sum + item.amount, 0);
+
+        const total = mappedItems.reduce((sum, item) => sum + (item.amount ?? 0), 0);
         const finalBill: Bill = {
           totalAmount: total,
           subtotal: total,
@@ -76,7 +76,7 @@ export class ApprovalDashboardDetails {
           rejectReason: ""
         };
 
-        
+
         this.billSignal.set([finalBill]);
       },
       error: (err) => console.error('Error fetching details:', err)
@@ -100,7 +100,7 @@ export class ApprovalDashboardDetails {
 
 
   calculateTotalAmount = computed(() =>
-    this.draftBills().reduce((sum, bill) => sum + bill.totalAmount, 0)
+    this.draftBills().reduce((sum, bill) => sum + (bill.totalAmount ?? 0), 0)
   );
 
   // calculateTotalAmounts = computed(() => {
@@ -115,16 +115,16 @@ export class ApprovalDashboardDetails {
     this.router.navigate(['/create-bill'], { state: { billData: item } });
   }
 
-  deleteBill(Id: string) {
-    debugger;
-    if (confirm("Are you sure want to delete this bill?")) {
-      this.billService.deleteBill(Id).subscribe({
-        next: () => {
-          alert('Deleted successfully!')
-        }, error: (err) => console.error(err)
-      })
-    }
-  }
+  // deleteBill(Id: string) {
+  //   debugger;
+  //   if (confirm("Are you sure want to delete this bill?")) {
+  //     this.billService.deleteBill(Id).subscribe({
+  //       next: () => {
+  //         alert('Deleted successfully!')
+  //       }, error: (err) => console.error(err)
+  //     })
+  //   }
+  // }
 
   // submitBill(bill: Bill) {
   //   this.billService.updateBill({ ...bill, status: 2 });

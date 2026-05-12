@@ -13,7 +13,7 @@ export interface UserInfo {
 
 export interface Bill {
 
-  totalAmount: number;
+  totalAmount?: number;
   subtotal?: number;
   items: IConvenceBill[];
   comments?: string;
@@ -21,20 +21,33 @@ export interface Bill {
 }
 
 export interface IConvenceBill {
-  visitedDate: string;
-  toLocation: string;
-  fromLocation: string;
-  purpose: string;
-  transportMode: string;
-  companyName: string;
-  userId: string;
-  amount: number;
-  status: number;
-  convID: string;
-  userRole: string | null;
-  currentStatus: number;
+  visitedDate?: string;
+  toLocation?: string;
+  fromLocation?: string;
+  purpose?: string;
+  transportMode?: string;
+  companyName?: string;
+  userId?: number;
+  amount?: number;
+  status?: number;
+  convID: number;
+  userRole?: string | null;
+  currentStatus?: number;
+  ctid:number;
+  cP_ID:number;
+  submittedDate:string;
+  
 }
 
+export interface IApprovalDetail {
+  approvalDate: string | null;
+  convID: number;
+  convOwnerUID: number;
+  personId: number;
+  personName: string;
+  submissionDate: string;
+  totalAmount: number;
+}
 
 
 

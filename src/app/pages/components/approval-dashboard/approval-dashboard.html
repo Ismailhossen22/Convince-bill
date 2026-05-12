@@ -8,6 +8,7 @@
   <div class="w-full">
     <div class="flex items-center justify-center p-4">
       <div
+        [formGroup]="filterForm"
         class="w-3/4 bg-white border border-gray-200 rounded-lg shadow-sm p-6 flex flex-col md:flex-row items-end md:items-center gap-6"
       >
         <div class="space-y-8 w-full p-4">
@@ -16,6 +17,7 @@
               <label class="text-base font-bold text-gray-700 whitespace-nowrap">From:</label>
               <input
                 type="date"
+                formControlName="fromDate"
                 class="w-full px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all"
               />
             </div>
@@ -24,13 +26,16 @@
               <label class="text-base font-bold text-gray-700 whitespace-nowrap">To:</label>
               <input
                 type="date"
+                formControlName="toDate"
                 class="w-full px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all"
               />
             </div>
           </div>
 
           <div class="flex items-center gap-2 w-full">
-            <label class="text-base font-bold text-gray-700 whitespace-nowrap">Employee Name:</label>
+            <label class="text-base font-bold text-gray-700 whitespace-nowrap"
+              >Employee Name:</label
+            >
             <input
               type="text"
               class="grow px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all"
@@ -40,6 +45,8 @@
 
         <div class="shrink-0">
           <button
+            (click)="loadApproval()"
+            type="button"
             class="grow bg-[#6db9d9] hover:bg-[#5ca8c8] text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-colors duration-200"
           >
             Apply
@@ -56,7 +63,7 @@
             <thead class="bg-gray-100">
               <tr>
                 <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">SL.</th>
-             
+
                 <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">
                   Employee ID
                 </th>
@@ -70,60 +77,62 @@
                 <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">Details</th>
               </tr>
             </thead>
+            @if (approvebill(); as bill) {
+              @for (item of bill; track $index; let i=$index) {
+                <tbody class="divide-y divide-gray-300">
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="border border-gray-300 px-4 py-3">{{i+1}}</td>
 
-            <tbody class="divide-y divide-gray-300">
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="border border-gray-300 px-4 py-3">1</td>
-               
-                <td class="border border-gray-300 px-4 py-3 font-bold">1160</td>
-                <td class="border border-gray-300 px-4 py-3">Ruhama</td>
-                <td class="border border-gray-300 px-4 py-3">1-Jan</td>
-                <td class="border border-gray-300 px-4 py-3">260</td>
-                <td class="px-4 py-2 border-none text-left">
-                  <button
-                    class="bg-[#add8e6] hover:bg-[#99c9d8] text-gray-800 text-xs font-bold py-1.5 px-4 rounded-full shadow-sm"
-                  >
-                    Details View
-                  </button>
-                </td>
-              </tr>
+                    <td class="border border-gray-300 px-4 py-3 font-bold">{{item.personId}}</td>
+                    <td class="border border-gray-300 px-4 py-3">{{item.personName}}</td>
+                    <td class="border border-gray-300 px-4 py-3">{{item.submissionDate | date: 'dd-MMM-yyyy'}} </td>
+                    <td class="border border-gray-300 px-4 py-3">{{item.totalAmount}}</td>
+                    <td class="px-4 py-2 border-none text-left">
+                      <button
+                        class="bg-[#add8e6] hover:bg-[#99c9d8] text-gray-800 text-xs font-bold py-1.5 px-4 rounded-full shadow-sm"
+                      >
+                        Details View
+                      </button>
+                    </td>
+                  </tr>
 
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="border border-gray-300 px-4 py-3">2</td>
-              
-                <td class="border border-gray-300 px-4 py-3 font-bold">1196</td>
-                <td class="border border-gray-300 px-4 py-3">Nayan</td>
-                <td class="border border-gray-300 px-4 py-3">2-Jan</td>
-                <td class="border border-gray-300 px-4 py-3">190</td>
-                <td class="px-4 py-2 border-none text-left">
-                  <button
-                    class="bg-[#add8e6] hover:bg-[#99c9d8] text-gray-800 text-xs font-bold py-1.5 px-4 rounded-full shadow-sm"
-                  >
-                    Details View
-                  </button>
-                </td>
-              </tr>
+                  <!-- <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="border border-gray-300 px-4 py-3">2</td>
 
-              <tr class="hover:bg-gray-50 transition-colors">
-                <td class="border border-gray-300 px-4 py-3">3</td>
-               
-                <td class="border border-gray-300 px-4 py-3 font-bold">1198</td>
-                <td class="border border-gray-300 px-4 py-3">Shourav</td>
-                <td class="border border-gray-300 px-4 py-3">3-Jan</td>
-                <td class="border border-gray-300 px-4 py-3">290</td>
-                <td class="px-4 py-2 border-none text-left">
-                  <button
-                    class="bg-[#add8e6] hover:bg-[#99c9d8] text-gray-800 text-xs font-bold py-1.5 px-4 rounded-full shadow-sm"
-                  >
-                    Details View
-                  </button>
-                </td>
-              </tr>
-            </tbody>
+                    <td class="border border-gray-300 px-4 py-3 font-bold">1196</td>
+                    <td class="border border-gray-300 px-4 py-3">Nayan</td>
+                    <td class="border border-gray-300 px-4 py-3">2-Jan</td>
+                    <td class="border border-gray-300 px-4 py-3">190</td>
+                    <td class="px-4 py-2 border-none text-left">
+                      <button
+                        class="bg-[#add8e6] hover:bg-[#99c9d8] text-gray-800 text-xs font-bold py-1.5 px-4 rounded-full shadow-sm"
+                      >
+                        Details View
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="border border-gray-300 px-4 py-3">3</td>
+
+                    <td class="border border-gray-300 px-4 py-3 font-bold">1198</td>
+                    <td class="border border-gray-300 px-4 py-3">Shourav</td>
+                    <td class="border border-gray-300 px-4 py-3">3-Jan</td>
+                    <td class="border border-gray-300 px-4 py-3">290</td>
+                    <td class="px-4 py-2 border-none text-left">
+                      <button
+                        class="bg-[#add8e6] hover:bg-[#99c9d8] text-gray-800 text-xs font-bold py-1.5 px-4 rounded-full shadow-sm"
+                      >
+                        Details View
+                      </button>
+                    </td>
+                  </tr> -->
+
+
+                </tbody>
+              }
+            }
           </table>
-
-         
-
         </div>
       </div>
     </div>

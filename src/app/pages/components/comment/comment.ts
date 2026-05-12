@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-comment',
-  imports: [FormsModule,ReactiveFormsModule,DatePipe],
+  imports: [FormsModule,ReactiveFormsModule,DatePipe,CommonModule],
   templateUrl: './comment.html',
   styleUrl: './comment.css',
 })

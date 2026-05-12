@@ -7,12 +7,12 @@ import { ShortDatePipe } from '../../pipes/short-data.pipe';
 
 @Component({
   selector: 'app-approval-history',
-  imports: [ShortDatePipe],
+  imports: [],
   templateUrl: './approval-history.html',
   styleUrl: './approval-history.css',
 })
 export class ApprovalHistory {
-  
+
   private billService = inject(BillService);
   private readonly AuthService = inject(AuthService)
   private router = inject(Router)
@@ -32,7 +32,7 @@ export class ApprovalHistory {
     if (!date) return allBills;
 
     return allBills.filter(bill =>
-      bill.items.some(item => item.visitedDate.startsWith(date))
+      bill.items.some(item => item.visitedDate?.startsWith(date))
     );
   });
 
@@ -50,7 +50,7 @@ export class ApprovalHistory {
 
 
   calculateTotalAmount = computed(() =>
-    this.draftBills().reduce((sum, bill) => sum + bill.totalAmount, 0)
+    this.draftBills().reduce((sum, bill) => sum + (bill.totalAmount ?? 0), 0)
   );
 
   // calculateTotalAmounts = computed(() => {
@@ -65,16 +65,16 @@ export class ApprovalHistory {
     this.router.navigate(['/create-bill'], { state: { billData: item } });
   }
 
-  deleteBill(Id: string) {
-    debugger;
-    if (confirm("Are you sure want to delete this bill?")) {
-      this.billService.deleteBill(Id).subscribe({
-        next: () => {
-          alert('Deleted successfully!')
-        }, error: (err) => console.error(err)
-      })
-    }
-  }
+  // deleteBill(Id: string) {
+  //   debugger;
+  //   if (confirm("Are you sure want to delete this bill?")) {
+  //     this.billService.deleteBill(Id).subscribe({
+  //       next: () => {
+  //         alert('Deleted successfully!')
+  //       }, error: (err) => console.error(err)
+  //     })
+  //   }
+  // }
 
   // submitBill(bill: Bill) {
   //   this.billService.updateBill({ ...bill, status: 2 });

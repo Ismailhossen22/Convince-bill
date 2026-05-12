@@ -17,7 +17,7 @@ export class BillService {
   private getVisitsUrl = 'https://localhost:7226/Conveyance/GetVisits';
   private UpdateStatusUrl = 'https://localhost:7226/Conveyance/UpdateStatus';
   private editBillUrl = 'https://localhost:7226/Conveyance/EditBill';
-  private deleteBillingUrl = 'https://localhost:7226/Conveyance/DeleteBilling';
+  private deleteBillingUrl ='https://localhost:7226/Conveyance/DeleteBilling';
   private createbillUrl = 'https://localhost:7174/Conveyance/CreateBilling';
 
   private billinfo = signal<IConvenceBill[]>([]);
@@ -29,56 +29,7 @@ export class BillService {
     this.loadBills();
   }
 
-  // loadBills() {
-  //   const user = this.AuthService.currentUser;
-  //   const userId = user()?.userId;
-  //   if (!userId) return;
-  //   const url = `${this.getBillTrackingUrl}?ConvOwnerUID=${userId}`;
-  //   console.log('Final URL:', url);
-
-  //   this.http.get<IConvenceBill[]>(url).subscribe({
-  //     next: (data: IConvenceBill[]) => {
-  //       this.billinfo.set(data);
-
-  //       if (!data || data.length == 0) {
-  //         this.billSignal.set([])
-  //         return;
-  //       }
-
-  //       const groupedByStatus = data.reduce((acc, item) => {
-
-  //         const statusValue = item.status;
-  //         if (!acc[statusValue]) {
-  //           acc[statusValue] = [];
-  //         }
-  //         acc[statusValue].push(item)
-  //         return acc
-  //       }, {} as Record<number, IConvenceBill[]>)
-
-  //       const transformedBill: Bill[] = Object.keys(groupedByStatus).map(statusKey => {
-
-  //         const nummericStatus = Number(statusKey)
-  //         const items = groupedByStatus[nummericStatus]
-
-  //         return {
-  //           items: items,
-  //           totalAmount: items?.reduce((sum, item) => sum + item.amount, 0),
-  //           comments: '',
-  //         }
-  //       });
-  //       console.log(transformedBill);
-  //       this.billSignal.set(transformedBill)
-
-  //     }, error: (err) => {
-  //       console.error('API থেকে ডাটা লোড করতে সমস্যা হয়েছে:', err)
-  //     }
-
-  //   });
-  // }
-
-  // updateBillApi(bill: IConvenceBill): Observable<IConvenceBill> {
-  //   return this.http.put<IConvenceBill>(`${this.apiUrl}/${bill.convID}`, bill);
-  // }
+ 
   loadBills() {
     const user = this.AuthService.currentUser;
     const userId = user()?.userId;
@@ -89,6 +40,7 @@ export class BillService {
 
     this.http.get<any>(url).subscribe({
       next: (res) => {
+
         const rawData = res?.event?.eventData?.[0]?.value || [];
 
         if (rawData.length === 0) {
@@ -99,6 +51,7 @@ export class BillService {
 
         const formattedData: IConvenceBill[] = rawData.map((item: any) => ({
           visitedDate: item.transportDate,
+          submittedDate:item.submittedDate,
           toLocation: item.toLocation,
           fromLocation: item.fromLocation,
           purpose: item.purpose,
@@ -107,16 +60,18 @@ export class BillService {
           amount: item.amount,
           status: item.status,
           currentStatus: item.currentStatus,
-          userId: item.userId || '',
           convID: item.convID || '',
+          ctid: item.ctid || '',
+          cP_ID: item.cP_ID || '',
           userRole: item.userRole || null,
+
         }));
 
         this.billinfo.set(formattedData);
 
         const groupedByStatus = formattedData.reduce(
           (acc, item) => {
-            const statusValue = item.status;
+            const statusValue = (item.status ?? 0);
             if (!acc[statusValue]) {
               acc[statusValue] = [];
             }
@@ -154,48 +109,60 @@ export class BillService {
   }
 
   editBillApi(payload: any): Observable<any> {
-    return this.http.post<any>(this.editBillUrl, payload);
+    return this.http.put<any>(this.editBillUrl, payload);
   }
 
   getApprovalDetails(
     submissionDate: string,
-    filteredUID?: string,
+    filteredUID?: number,
     userRole?: string,
-    statusId?: string,
+    statusId?: number,
   ): Observable<any> {
     const url = this.getApprovalDetailsUrl;
 
+
     let params = new HttpParams().set('SubmissionDate', submissionDate);
-    if (filteredUID) {
-      params = params.set('FilteredUID', filteredUID);
+
+
+    if (filteredUID !== undefined && filteredUID !== null) {
+      params = params.set('FilteredUID', filteredUID.toString());
     }
-    if (userRole) {
+
+    if (userRole && userRole.trim() !== '') {
       params = params.set('UserRole', userRole);
     }
-    if (statusId) {
-      params = params.set('StatusId', statusId);
+
+    if (statusId !== undefined && statusId !== null) {
+      params = params.set('StatusId', statusId.toString());
     }
+
+    console.log('Final API URL:', `${url}?${params.toString()}`);
+
     return this.http.get<any>(url, { params });
   }
+
+
   getApproval(
     From: string,
     To: string,
     UserRole?: string,
     StatusId?: number,
-    UID?: string,
+    UID?: number,
   ): Observable<any> {
     const url = this.getApprovalUrl;
 
     let params = new HttpParams().set('From', From).set('To', To);
-    if (UID) {
-      params = params.set('UID', UID); 
+
+    if (UID != null) {
+      params = params.set('UID', UID.toString());
     }
     if (UserRole) {
       params = params.set('UserRole', UserRole);
     }
-    if (StatusId !== undefined && StatusId !== null) {
+    if (StatusId != null) {
       params = params.set('StatusId', StatusId.toString());
     }
+    console.log('Final API URL:', `${url}?${params.toString()}`);
     return this.http.get<any>(url, { params });
   }
 
@@ -211,7 +178,7 @@ export class BillService {
         if (!data || data.length === 0) return [];
 
         const grouped = data.reduce((acc: { [key: string]: IConvenceBill[] }, item) => {
-          const dateKey = item.visitedDate.split('T')[0];
+          const dateKey = item.visitedDate ?? ''.split('T')[0];
           if (!acc[dateKey]) acc[dateKey] = [];
           acc[dateKey].push(item);
           return acc;
@@ -267,7 +234,7 @@ export class BillService {
     );
   }
 
-  approveBill(convID: string) {
+  approveBill(convID: number) {
     this.billSignal.update((bills) =>
       bills.map((b) => {
         if (b.items.length > 0 && b.items[0].convID === convID) {
@@ -280,7 +247,7 @@ export class BillService {
     );
   }
 
-  rejectBill(convID: string, reason: string) {
+  rejectBill(convID: number, reason: string) {
     this.billSignal.update((bills) =>
       bills.map((b) => {
         if (b.items.length > 0 && b.items[0].convID === convID) {
@@ -297,13 +264,18 @@ export class BillService {
     );
   }
 
-  deleteBill(id: string) {
-    const url = `${this.apiUrl}/${id}`;
+  deleteBill(convID: number, ctid: number) {
+    const url = this.deleteBillingUrl;
 
-    return this.http.delete(url).pipe(
+   const body = {
+    ctid: ctid,
+    convID: convID
+  };
+
+    return this.http.post(url,body).pipe(
       tap(() => {
         this.billSignal.update((bills) =>
-          bills.filter((b) => b.items.length > 0 && b.items[0].convID !== id),
+          bills.filter((b) => b.items.length > 0 && b.items[0].convID !== convID),
         );
         console.log('Signal updated from service');
       }),

@@ -75,7 +75,7 @@
                         [attr.rowspan]="bill.items.length + 1"
                         class="border border-gray-800 px-2 py-2 font-semibold align-top bg-white"
                       >
-                        {{ item.visitedDate | shortDate }}
+                        {{ item.visitedDate??'' | shortDate }}
                       </td>
                     }
 

@@ -92,8 +92,7 @@ export class CreateBill implements OnInit {
       purpose: [''],
       transportMode: [''],
       amount: [0, Validators.required],
-      convID: ['']
-
+      convID:[]
 
     });
   }
@@ -162,7 +161,7 @@ export class CreateBill implements OnInit {
       this.bilform.markAllAsTouched();
       return;
     }
-
+   debugger;
 
     this.items.controls.forEach((_, i) => {
       const payload = this.buildBillPayload(BillStatus.Draft, i);
@@ -194,16 +193,17 @@ export class CreateBill implements OnInit {
         convID: item.convID,
         fromLocation: item.fromLocation,
         toLocation: item.toLocation,
-        totalAmount: item.amount.toString(),
-        updatedByUID: user?.userId || item.userId,
-        ctid: "",
+        totalAmount: item.amount?.toString(),
+        updatedByUID: user?.userId,
+        ctid:this.receivedData?.ctid ,
         cP_ID: "",
         companyName: item.companyName,
         transportDate: item.visitedDate,
         transportPurpose: item.purpose,
-        transportMode: item.transportMode
+        transportMode: item.transportMode,
+       
       };
-      
+     
 
       this.billService.editBillApi(payload).subscribe({
         next: (item) => {

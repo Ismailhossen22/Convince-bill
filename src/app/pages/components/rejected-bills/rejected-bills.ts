@@ -21,7 +21,7 @@ private billService = inject(BillService);
   draftBills = this.billService.draftBills;
 
   calculateTotalAmount = computed(() =>
-    this.draftBills().reduce((sum, bill) => sum + bill.totalAmount, 0)
+    this.draftBills().reduce((sum, bill) => sum +( bill.totalAmount??0), 0)
   );
 
   // calculateTotalAmounts = computed(() => {
@@ -36,16 +36,16 @@ private billService = inject(BillService);
     this.router.navigate(['/create-bill'], { state: { billData: item } });
   }
 
-  deleteBill(Id: string) {
-    debugger;
-    if (confirm("Are you sure want to delete this bill?")) {
-      this.billService.deleteBill(Id).subscribe({
-        next: () => {
-          alert('Deleted successfully!')
-        }, error: (err) => console.error(err)
-      })
-    }
-  }
+  // deleteBill(Id: string) {
+  //   debugger;
+  //   if (confirm("Are you sure want to delete this bill?")) {
+  //     this.billService.deleteBill().subscribe({
+  //       next: () => {
+  //         alert('Deleted successfully!')
+  //       }, error: (err) => console.error(err)
+  //     })
+  //   }
+  // }
 
   // submitBill(bill: Bill) {
   //   this.billService.updateBill({ ...bill, status: 2 });
