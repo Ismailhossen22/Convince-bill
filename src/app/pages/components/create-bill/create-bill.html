@@ -17,7 +17,7 @@
           Holiday List
         </button>
       </div>
-      @if (AuthService.currentUser();as user) {
+      @if (AuthService.currentUser(); as user) {
         <div class="border border-gray-200 rounded-lg overflow-hidden w-3/5">
           <table class="w-full text-sm">
             <tbody class="divide-y divide-gray-300">
@@ -256,7 +256,7 @@
       }
 
       <button
-        (click)="submitToSupervisor()"
+        (click)="submitotSupervisor()"
         [disabled]="isEditMode()"
         class="px-5 py-2 text-sm bg-[#67D5B2] text-white rounded-lg hover:bg-[#5aa894] transition"
       >
@@ -265,3 +265,12 @@
     </div>
   </div>
 </div>
+
+@if (showSuccessModal()) {
+  <app-success-page
+    [summaryData]="submissionSummary()"
+    (onCreateNew)="handleCreateNew()"
+    (onTrackStatus)="handleTrackStatus()"
+  >
+  </app-success-page>
+}

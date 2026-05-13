@@ -1,31 +1,35 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, output, Output, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IConvenceBill } from '../../models/bill.mode';
 
 @Component({
   selector: 'app-comment',
-  imports: [FormsModule,ReactiveFormsModule,DatePipe,CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, DatePipe, CommonModule],
   templateUrl: './comment.html',
   styleUrl: './comment.css',
 })
 export class Comment {
 
+  selectedBills = input.required<IConvenceBill[]>();
 
-  @Input() selectedBills: any[] = []; // অন্য কম্পোনেন্ট থেকে ডাটা আসবে
-  @Output() close = new EventEmitter<void>();
-  @Output() rejectSubmit = new EventEmitter<string>();
+  close = output<void>();
+  submit = output<string>();
 
-  rejectReason: string = '';
+ 
+  rejectReason = signal<string>('');
 
-  closeModal() {
+  onCancel() {
     this.close.emit();
   }
 
-  submitReject() {
-    if (this.rejectReason.trim()) {
-      this.rejectSubmit.emit(this.rejectReason);
+  onSubmit() {
+
+    if (this.rejectReason().trim()) {
+      this.submit.emit(this.rejectReason());
     } else {
       alert("Please provide a reason!");
     }
   }
+
 }

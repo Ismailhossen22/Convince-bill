@@ -7,12 +7,14 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
 import { debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { AuthService } from '../../../features/services/AuthService';
+import { SuccessPage } from "../success-page/success-page";
+
 
 
 
 @Component({
   selector: 'app-create-bill',
-  imports: [CommonModule, ReactiveFormsModule, ShortDatePipe],
+  imports: [CommonModule, ReactiveFormsModule, ShortDatePipe, SuccessPage],
   templateUrl: './create-bill.html',
   styleUrl: './create-bill.css',
 })
@@ -29,7 +31,8 @@ export class CreateBill implements OnInit {
   isEditMode = signal<boolean>(false);
   editingBill = signal<IConvenceBill | null>(null);
   isSubmitting = signal<boolean>(false);
-
+  showSuccessModal = signal(false);
+  submissionSummary = signal<any>(null);
 
   itemSignal = signal<any[]>([]);
   totalAmount = computed(() =>
@@ -92,7 +95,7 @@ export class CreateBill implements OnInit {
       purpose: [''],
       transportMode: [''],
       amount: [0, Validators.required],
-      convID:[]
+      convID: []
 
     });
   }
@@ -155,13 +158,17 @@ export class CreateBill implements OnInit {
     }
     return result;
   }
+
+
   //  Save Draft
   saveDraft(): void {
     if (this.bilform.invalid) {
       this.bilform.markAllAsTouched();
       return;
     }
-   debugger;
+    debugger;
+    const totalAmount = this.items.value.reduce((acc: number, cur: any) => acc + (Number(cur.amount) || 0), 0);
+
 
     this.items.controls.forEach((_, i) => {
       const payload = this.buildBillPayload(BillStatus.Draft, i);
@@ -172,7 +179,65 @@ export class CreateBill implements OnInit {
           console.log(`Item ${i + 1} saved:`, res);
 
           if (i === this.items.length - 1) {
-            this.router.navigate(['/draft-bills']);
+
+            this.submissionSummary.set({
+              billId: res.convID || 'N/A',
+              date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }),
+              employeeName: this.AuthService.currentUser()?.name,
+              totalEntries: this.items.length,
+              period: 'Current Submission',
+              amount: totalAmount
+            });
+            this.showSuccessModal.set(true)
+
+            // this.router.navigate(['/draft-bills']);
+          }
+        },
+        error: (err) => console.error(`Error saving item ${i}:`, err)
+      });
+    });
+  }
+  handleCreateNew() {
+    this.showSuccessModal.set(false);
+    this.bilform.reset();
+    this.router.navigate(['/create-bill'])
+
+  }
+
+  handleTrackStatus() {
+    this.showSuccessModal.set(false);
+    this.router.navigate(['/draft-bills']);
+  }
+
+
+  submitotSupervisor(): void {
+
+    if (this.bilform.invalid) {
+      this.bilform.markAllAsTouched();
+      return;
+    }
+    debugger;
+    const totalAmount = this.items.value.reduce((acc: number, cur: any) => acc + (Number(cur.amount) || 0), 0);
+    this.items.controls.forEach((_, i) => {
+      const payload = this.buildBillPayload(BillStatus.SentToSupervisor, i);
+      debugger;
+      this.billService.AddBillApi(payload).subscribe({
+        next: (res) => {
+          debugger;
+          this.items.reset()
+          console.log(`Item ${i + 1} saved:`, res);
+
+          if (i === this.items.length - 1) {
+
+            this.submissionSummary.set({
+              billId: res.convID || 'N/A',
+              date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }),
+              employeeName: this.AuthService.currentUser()?.name,
+              totalEntries: this.items.length,
+              period: 'Current Submission',
+              amount: totalAmount
+            });
+            this.showSuccessModal.set(true)
           }
         },
         error: (err) => console.error(`Error saving item ${i}:`, err)
@@ -180,8 +245,9 @@ export class CreateBill implements OnInit {
     });
   }
 
+
   editBill() {
-     debugger;
+    debugger;
     if (this.bilform.invalid) {
       this.bilform.markAllAsTouched();
       return;
@@ -195,19 +261,19 @@ export class CreateBill implements OnInit {
         toLocation: item.toLocation,
         totalAmount: item.amount?.toString(),
         updatedByUID: user?.userId,
-        ctid:this.receivedData?.ctid ,
+        ctid: this.receivedData?.ctid,
         cP_ID: "",
         companyName: item.companyName,
         transportDate: item.visitedDate,
         transportPurpose: item.purpose,
         transportMode: item.transportMode,
-       
+
       };
-     
+
 
       this.billService.editBillApi(payload).subscribe({
         next: (item) => {
-        console.log('Update Success for:', item.convID);
+          console.log('Update Success for:', item.convID);
           this.router.navigate(['/draft-bills']);
         }, error: (err) => console.error('Update failed:', err)
       })
@@ -267,30 +333,6 @@ export class CreateBill implements OnInit {
     }, 200);
   }
 
-
-  // ✅ Submit to Supervisor
-  submitToSupervisor(): void {
-    if (this.items.invalid) {
-      this.items.markAllAsTouched();
-      return;
-    }
-
-    this.isSubmitting.set(true);
-
-    const payload = this.buildBillPayload(BillStatus.SentToAccountsExecutive);
-
-    // if (this.isEditMode() && this.editingBill()) {
-    //   this.billService.updateBill({
-    //     ...payload,
-    //     id: this.editingBill()!.id
-    //   });
-    // } else {
-    //   this.billService.submitBill(payload);
-    // }
-
-    this.isSubmitting.set(false);
-    this.router.navigate(['/success']);
-  }
 
 
   formatDate(dateStr: string): string {

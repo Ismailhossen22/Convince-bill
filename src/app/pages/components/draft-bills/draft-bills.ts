@@ -44,7 +44,7 @@ export class DraftBills implements OnInit {
     if (!userId) return;
 
     const url = `${this.getBillTrackingUrl}?ConvOwnerUID=${userId}`;
-    console.log('Final URL:', url);
+  
 
 
     this.http.get<any>(url).subscribe({
@@ -55,7 +55,7 @@ export class DraftBills implements OnInit {
         const billsArray = res?.event?.eventData?.[0]?.value;
 
         if (billsArray && billsArray.length > 0) {
-          console.log('আসল বিলের ডাটা পাওয়া গেছে:', billsArray);
+        //  console.log('আসল বিলের ডাটা পাওয়া গেছে:', billsArray);
 
         } else {
           console.warn('সার্ভার থেকে রেসপন্স আসছে কিন্তু বিলের লিস্ট (value) খালি।');

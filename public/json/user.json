@@ -4,7 +4,7 @@
         "password": "325",
         "name": "Samir Hossain",
         "contacNo": "01711000000",
-        "designation": "Software",
+        "designation": "Employee",
         "submitDate": "2024-05-10",
         "department": "IT",
         "group": "A"
@@ -14,7 +14,7 @@
         "password": "327",
         "name": "Tanvir Ahmed",
         "contacNo": "01911000002",
-        "designation": "UI/UX Designer",
+        "designation": "Employee",
         "submitDate": "2024-05-08",
         "department": "IT",
         "group": "B"
@@ -24,7 +24,7 @@
         "password": "327",
         "name": "Sultana Razia",
         "contacNo": "01511000003",
-        "designation": "QA Engineer",
+        "designation": "Employeer",
         "submitDate": "2024-05-10",
         "department": "Sales",
         "group": "A"

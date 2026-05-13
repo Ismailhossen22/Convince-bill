@@ -88,7 +88,7 @@
                     <td class="border border-gray-300 px-4 py-3">{{item.submissionDate | date: 'dd-MMM-yyyy'}} </td>
                     <td class="border border-gray-300 px-4 py-3">{{item.totalAmount}}</td>
                     <td class="px-4 py-2 border-none text-left">
-                      <button
+                      <button type="button" (click)="goToDetails(item.submissionDate,item.personId)"
                         class="bg-[#add8e6] hover:bg-[#99c9d8] text-gray-800 text-xs font-bold py-1.5 px-4 rounded-full shadow-sm"
                       >
                         Details View
@@ -136,5 +136,7 @@
         </div>
       </div>
     </div>
+
+    
   </div>
 </div>

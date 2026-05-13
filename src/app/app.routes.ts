@@ -21,7 +21,7 @@ export const routes: Routes = [
     { path: 'rejected-bills', component: RejectedBills },
     { path: 'bill-tracking', component: BillTracking },
     { path: 'approval-dashboard', component: ApprovalDashboard },
-    { path: 'dashboard-details', component: ApprovalDashboardDetails },
+    { path: 'approval-details', component: ApprovalDashboardDetails },
     { path: 'approval-history', component: ApprovalHistory },
     { path: 'monthly-report', component: MonthlyReport },
     { path: 'success', component: SuccessPage },

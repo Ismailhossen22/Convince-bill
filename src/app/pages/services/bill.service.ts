@@ -17,7 +17,7 @@ export class BillService {
   private getVisitsUrl = 'https://localhost:7226/Conveyance/GetVisits';
   private UpdateStatusUrl = 'https://localhost:7226/Conveyance/UpdateStatus';
   private editBillUrl = 'https://localhost:7226/Conveyance/EditBill';
-  private deleteBillingUrl ='https://localhost:7226/Conveyance/DeleteBilling';
+  private deleteBillingUrl = 'https://localhost:7226/Conveyance/DeleteBilling';
   private createbillUrl = 'https://localhost:7174/Conveyance/CreateBilling';
 
   private billinfo = signal<IConvenceBill[]>([]);
@@ -29,7 +29,7 @@ export class BillService {
     this.loadBills();
   }
 
- 
+
   loadBills() {
     const user = this.AuthService.currentUser;
     const userId = user()?.userId;
@@ -51,7 +51,7 @@ export class BillService {
 
         const formattedData: IConvenceBill[] = rawData.map((item: any) => ({
           visitedDate: item.transportDate,
-          submittedDate:item.submittedDate,
+          submittedDate: item.submittedDate,
           toLocation: item.toLocation,
           fromLocation: item.fromLocation,
           purpose: item.purpose,
@@ -156,13 +156,13 @@ export class BillService {
     if (UID != null) {
       params = params.set('UID', UID.toString());
     }
-    if (UserRole) {
+    if (UserRole!=null) {
       params = params.set('UserRole', UserRole);
     }
     if (StatusId != null) {
       params = params.set('StatusId', StatusId.toString());
     }
-    console.log('Final API URL:', `${url}?${params.toString()}`);
+   // console.log('Final API URL:', `${url}?${params.toString()}`);
     return this.http.get<any>(url, { params });
   }
 
@@ -234,6 +234,25 @@ export class BillService {
     );
   }
 
+
+
+  updateBillStatus(convIds: number[], currentStatus: number, requestedStatus: number, comment: string = ""): Observable<any> {
+    const url = this.UpdateStatusUrl;
+    const userId = this.AuthService.currentUser()?.userId || "";
+
+    const body = {
+      convIDs: convIds,           
+      currentStatus: currentStatus,
+      requestedStatus: requestedStatus,
+      comment: comment,
+      actionByUid: userId         
+    };
+
+    return this.http.put(url, body)
+    
+    
+  }
+
   approveBill(convID: number) {
     this.billSignal.update((bills) =>
       bills.map((b) => {
@@ -267,12 +286,12 @@ export class BillService {
   deleteBill(convID: number, ctid: number) {
     const url = this.deleteBillingUrl;
 
-   const body = {
-    ctid: ctid,
-    convID: convID
-  };
+    const body = {
+      ctid: ctid,
+      convID: convID
+    };
 
-    return this.http.post(url,body).pipe(
+    return this.http.post(url, body).pipe(
       tap(() => {
         this.billSignal.update((bills) =>
           bills.filter((b) => b.items.length > 0 && b.items[0].convID !== convID),

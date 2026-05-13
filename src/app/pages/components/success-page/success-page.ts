@@ -7,18 +7,9 @@ import { Component, input, output } from '@angular/core';
   styleUrl: './success-page.css',
 })
 export class SuccessPage {
+summaryData = input.required<any>();
 
-
-  summaryData = input({
-    billId: 'CB-2024-015',
-    date: 'January 18, 2024',
-    employeeName: 'Md. Aftahi Islam Nayan',
-    totalEntries: '6',
-    period: 'Jan 1 - Jan 6, 2024',
-    amount: '240'
-  });
-
-  // Output Signals
+  // অ্যাকশন পাঠানোর জন্য output signal
   onCreateNew = output<void>();
   onTrackStatus = output<void>();
 
@@ -29,4 +20,9 @@ export class SuccessPage {
   trackStatus() {
     this.onTrackStatus.emit();
   }
+
+
+
+
+
 }

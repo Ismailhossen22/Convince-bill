@@ -1,4 +1,4 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-700 bg-opacity-50">
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 ">
   <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden space-y-4">
     <div class="flex justify-center items-center ">
       <div class="bg-emerald-500 p-8 text-center text-white relative w-3/4 rounded-2xl my-4">
@@ -46,29 +46,29 @@
 
         <div class="grid grid-cols-2 gap-y-4 text-sm">
           <div>
-            <p class="text-slate-400 text-xs font-medium uppercase">Bill ID</p>
+            <p class="text-slate-600 text-sm font-medium uppercase">Bill ID</p>
             <p class="font-bold text-slate-800">{{ summaryData().billId }}</p>
           </div>
           <div>
-            <p class="text-slate-400 text-xs font-medium uppercase text-right">Submission Date</p>
+            <p class="text-slate-600 text-sm font-medium uppercase text-right">Submission Date</p>
             <p class="font-bold text-slate-800 text-right">{{ summaryData().date }}</p>
           </div>
           <div>
-            <p class="text-slate-400 text-xs font-medium uppercase">Employee Name</p>
+            <p class="text-slate-600 text-sm font-medium uppercase">Employee Name</p>
             <p class="font-bold text-slate-800">{{ summaryData().employeeName }}</p>
           </div>
           <div>
-            <p class="text-slate-400 text-xs font-medium uppercase text-right">Total Entries</p>
+            <p class="text-slate-600 text-sm font-medium uppercase text-right">Total Entries</p>
             <p class="font-bold text-slate-800 text-right">
               {{ summaryData().totalEntries }} Travel Days
             </p>
           </div>
           <div>
-            <p class="text-slate-400 text-xs font-medium uppercase">Coverage Period</p>
+            <p class="text-slate-600 text-sm font-medium uppercase">Coverage Period</p>
             <p class="font-bold text-slate-800">{{ summaryData().period }}</p>
           </div>
           <div>
-            <p class="text-slate-400 text-xs font-medium uppercase text-right">Total Amount</p>
+            <p class="text-slate-600 text-sm font-medium uppercase text-right">Total Amount</p>
             <p class="font-bold text-emerald-600 text-xl text-right">
               ৳ {{ summaryData().amount }}
             </p>
@@ -108,9 +108,3 @@
   </div>
 </div>
 
-<!-- <app-success-modal 
-  *ngIf="showSuccessModal()" 
-  [summaryData]="savedBillInfo()"
-  (onCreateNew)="handleCreateNew()"
-  (onTrackStatus)="handleTrackStatus()">
-</app-success-modal> -->

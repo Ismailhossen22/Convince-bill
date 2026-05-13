@@ -36,6 +36,7 @@ export interface IConvenceBill {
   ctid:number;
   cP_ID:number;
   submittedDate:string;
+  name?:string
   
 }
 
