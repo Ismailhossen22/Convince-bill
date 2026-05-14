@@ -14,43 +14,32 @@ import { ShortDatePipe } from '../../pipes/short-data.pipe';
 export class RejectedBills {
 
 
-private billService = inject(BillService);
+  private billService = inject(BillService);
 
   private router = inject(Router)
 
-  draftBills = this.billService.draftBills;
+  rejectBill = this.billService.rejectedBills;
 
   calculateTotalAmount = computed(() =>
-    this.draftBills().reduce((sum, bill) => sum +( bill.totalAmount??0), 0)
+    this.rejectBill().reduce((sum, bill) => sum + (bill.totalAmount ?? 0), 0)
   );
 
-  // calculateTotalAmounts = computed(() => {
-  //   let runningTotal = 0;
-  //   return this.draftBills().map(bill => {
-  //     runningTotal += bill.totalAmount;
-  //     return { ...bill, cumulativeTotal: runningTotal };
-  //   });
-  // });
 
   editSingleItem(item: IConvenceBill) {
+    debugger;
     this.router.navigate(['/create-bill'], { state: { billData: item } });
   }
 
-  // deleteBill(Id: string) {
-  //   debugger;
-  //   if (confirm("Are you sure want to delete this bill?")) {
-  //     this.billService.deleteBill().subscribe({
-  //       next: () => {
-  //         alert('Deleted successfully!')
-  //       }, error: (err) => console.error(err)
-  //     })
-  //   }
-  // }
+  deleteBill(convID: number, ctid: number) {
+    debugger;
 
-  // submitBill(bill: Bill) {
-  //   this.billService.updateBill({ ...bill, status: 2 });
-  //   this.router.navigate(['/success']);
-  // }
-
+    if (confirm("Are you sure want to delete this bill?")) {
+      this.billService.deleteBill(convID, ctid).subscribe({
+        next: () => {
+          alert('Deleted successfully!')
+        }, error: (err) => console.error(err)
+      })
+    }
+  }
 
 }

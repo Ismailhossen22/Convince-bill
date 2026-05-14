@@ -1,5 +1,5 @@
 import { Component, computed, Inject, inject, signal } from '@angular/core';
-import { Bill, IConvenceBill } from '../../models/bill.mode';
+import { Bill, BillStatus, IConvenceBill } from '../../models/bill.mode';
 import { AuthService } from '../../../features/services/AuthService';
 import { BillService } from '../../services/bill.service';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
@@ -136,9 +136,10 @@ export class ApprovalDashboardDetails {
   }
 
   handleFinalStatusUpdate(comment: string) {
+    debugger;
     const convIdsArray = this.selectedConvID();
     const currentStatus = this.pendingtStatus();
-    const nextStatus = 1;
+    const nextStatus = BillStatus.Rejected;
     debugger;
     this.billService.updateBillStatus(convIdsArray, currentStatus, nextStatus, comment).subscribe({
       next: (res) => {

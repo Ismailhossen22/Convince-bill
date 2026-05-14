@@ -13,7 +13,9 @@
           <thead class="bg-gray-100 text-gray-600 font-medium">
             <tr>
               <th class="px-3 py-3 whitespace-nowrap border border-gray-400">SL</th>
-              <th class="px-3 py-3 whitespace-nowrap border border-gray-400">Visited Date</th>
+              <th class="px-3 py-3 whitespace-nowrap border border-gray-400 min-w-26">
+                Visited Date
+              </th>
               <th class="px-3 py-3 whitespace-nowrap border border-gray-400">From</th>
               <th class="px-3 py-3 whitespace-nowrap border border-gray-400">To</th>
               <th class="px-3 py-3 border border-gray-400">Vsited Company</th>
@@ -27,13 +29,13 @@
           </thead>
 
           <tbody>
-            @for (bill of draftBills(); track $index) {
+            @for (bill of rejectBill(); track $index) {
               @for (item of bill.items; track item.convID; let i = $index) {
                 <tr class="bg-white hover:bg-gray-50">
                   <td class="px-3 py-2 text-gray-500 border border-gray-400">{{ i + 1 }}</td>
 
                   <td class="px-3 py-2 border border-gray-400">
-                    {{ item.visitedDate ??'' | shortDate }}
+                    {{ item.visitedDate ?? '' | shortDate }}
                   </td>
                   <td class="px-3 py-2 border border-gray-400">{{ item.toLocation }}</td>
                   <td class="px-3 py-2 border border-gray-400">{{ item.fromLocation }}</td>
@@ -41,14 +43,16 @@
                   <td class="px-3 py-2 border border-gray-400">{{ item.purpose }}</td>
                   <td class="px-3 py-2 border border-gray-400">{{ item.transportMode }}</td>
                   <td class="px-3 py-2 border border-gray-400">{{ item.amount }}</td>
-                  <td class="px-3 py-2 border border-gray-400">{{ item.transportMode }}</td>
-                  <td class="px-3 py-2 border border-gray-400"></td>
+                  <td class="px-3 py-2 border border-gray-400">{{ item.sentBackFromStage }}</td>
+
+                  <td class="px-3 py-2 border border-gray-400">{{ item.comments }}</td>
+
                   <td class="px-3 py-2 border border-gray-400">
-                    <div class="flex ">
+                    <div class="flex">
                       <button (click)="editSingleItem(item)">
                         <img class="h-10 w-10" src="images/Edit.svg" alt="Edit" />
                       </button>
-                      <button >
+                      <button (click)="deleteBill(item.convID, item.ctid)">
                         <img class="h-10 w-10" src="images/Trash.svg" alt="Delete" />
                       </button>
                     </div>

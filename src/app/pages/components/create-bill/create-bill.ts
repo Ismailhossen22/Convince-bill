@@ -172,9 +172,11 @@ export class CreateBill implements OnInit {
 
     this.items.controls.forEach((_, i) => {
       const payload = this.buildBillPayload(BillStatus.Draft, i);
+     
       debugger;
       this.billService.AddBillApi(payload).subscribe({
         next: (res) => {
+          
           debugger;
           console.log(`Item ${i + 1} saved:`, res);
 
@@ -197,6 +199,8 @@ export class CreateBill implements OnInit {
       });
     });
   }
+
+
   handleCreateNew() {
     this.showSuccessModal.set(false);
     this.bilform.reset();

@@ -15,27 +15,42 @@
             <div class="w-1/2 text-base text-gray-600">
               <input
                 type="text"
+                (input)="searchTerm.set($any($event.target).value)"
                 placeholder="Search the Visited company.."
                 class="placeholder:text-gray-500 w-full px-3 py-3 border border-gray-400 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all"
               />
             </div>
 
             <div class="flex items-center gap-4 p-4">
-              <button
-                type="button"
-                class="whitespace-nowrap flex items-center gap-2 px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-xl transition-colors duration-200"
-              >
-                <img class="h-10" src="images/Filter.svg" alt="filter" />
-                This month
-              </button>
+              <div>
+                <button
+                  type="button"
+                  (click)="filterThisMonth()"
+                  [class.bg-slate-700]="thisMonthOnly()"
+                  [class.text-white]="thisMonthOnly()"
+                  class="whitespace-nowrap h-14 min-w-37.5 flex items-center justify-center gap-1 px-6 border border-gray-300 bg-gray-100 hover:bg-gray-200 rounded-2xl text-sm font-medium transition-all duration-200 shadow-sm"
+                >
+                  <img class="h-8 w-8" src="images/Filter.svg" alt="filter" />
+                  This Month
+                </button>
+              </div>
 
-              <button
-                type="button"
-                class="flex items-center whitespace-nowrap gap-2 px-8 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-xl transition-colors duration-200"
-              >
-                <img class="h-10" src="images/Filter.svg" alt="filter" />
-                All Statuses
-              </button>
+              <div class="relative">
+                <select
+                  (change)="
+                    filterStatus($any($event.target).value ? +$any($event.target).value : null)
+                  "
+                  class="w-full px-5 py-4 border border-gray-300 rounded-xl bg-gray-100 text-gray-800 text-sm font-medium hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-300"
+                >
+                  <option value="">All Statuses</option>
+
+                  @for (status of statusOptions; track status.value) {
+                    <option [value]="status.value">
+                      {{ status.label }}
+                    </option>
+                  }
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -53,7 +68,7 @@
                 <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">
                   Visited Date
                 </th>
-                 <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">
+                <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">
                   Submitted Date
                 </th>
                 <th class="border border-gray-300 px-4 py-3 font-bold text-gray-800">Form</th>
@@ -71,51 +86,43 @@
                 </th>
               </tr>
             </thead>
-            @for (bill of billdata(); track $index;) {
-              <tbody class="divide-y divide-gray-300">
-                @for (item of bill.items; track $index ; let i = $index) {
-                  <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="border border-gray-300 px-4 py-3">{{ i + 1 }}</td>
-                    <td class="border border-gray-300 px-4 py-3 ">{{item.visitedDate | date:'dd-MMM-yyyy'}}</td>
-                    <td class="border border-gray-300 px-4 py-3">{{item.submittedDate | date:'dd-MMM-yyyy' }}</td>
-                    <td class="border border-gray-300 px-4 py-3">{{item.fromLocation}}</td>
-                    <td class="border border-gray-300 px-4 py-3">{{item.toLocation}}</td>
-                    <td class="border border-gray-300 px-4 py-3 ">{{item.companyName}}</td>
-                    <td class="border border-gray-300 px-4 py-3">{{item.purpose}}</td>
-                    <td class="border border-gray-300 px-4 py-3">{{item.transportMode}}</td>
-                    <td class="border border-gray-300 px-4 py-3">{{item.amount}}</td>
-                     <td class="border border-gray-300 px-4 py-3">{{item.currentStatus}}</td>
-                  </tr>
-                }
 
-                <!-- <tr class="hover:bg-gray-50 transition-colors">
-                  <td class="border border-gray-300 px-4 py-3">2</td>
-
-                  <td class="border border-gray-300 px-4 py-3 font-bold">1196</td>
-                  <td class="border border-gray-300 px-4 py-3">Nayan</td>
-                  <td class="border border-gray-300 px-4 py-3">2-Jan</td>
-                  <td class="border border-gray-300 px-4 py-3">190</td>
-                  <td class="border border-gray-300 px-4 py-3 font-bold">1160</td>
-                  <td class="border border-gray-300 px-4 py-3">Ruhama</td>
-                  <td class="border border-gray-300 px-4 py-3">1-Jan</td>
-                  <td class="border border-gray-300 px-4 py-3">Approved</td>
-                </tr>
-
+            <tbody class="divide-y divide-gray-300">
+              @for (item of paginatedBills(); track item.convID; let i = $index) {
                 <tr class="hover:bg-gray-50 transition-colors">
-                  <td class="border border-gray-300 px-4 py-3">3</td>
-
-                  <td class="border border-gray-300 px-4 py-3 font-bold">1198</td>
-                  <td class="border border-gray-300 px-4 py-3">Shourav</td>
-                  <td class="border border-gray-300 px-4 py-3">3-Jan</td>
-                  <td class="border border-gray-300 px-4 py-3">290</td>
-                  <td class="border border-gray-300 px-4 py-3 font-bold">1160</td>
-                  <td class="border border-gray-300 px-4 py-3">Ruhama</td>
-                  <td class="border border-gray-300 px-4 py-3">1-Jan</td>
-                  <td class="border border-gray-300 px-4 py-3">Paid</td>
-                </tr> -->
-              </tbody>
-            }
+                  <td class="border border-gray-300 px-4 py-3">{{ i + 1 }}</td>
+                  <td class="border border-gray-300 px-4 py-3">
+                    {{ item.visitedDate | date: 'dd-MMM-yyyy' }}
+                  </td>
+                  <td class="border border-gray-300 px-4 py-3">
+                    {{ item.submittedDate | date: 'dd-MMM-yyyy' }}
+                  </td>
+                  <td class="border border-gray-300 px-4 py-3">{{ item.fromLocation }}</td>
+                  <td class="border border-gray-300 px-4 py-3">{{ item.toLocation }}</td>
+                  <td class="border border-gray-300 px-4 py-3">{{ item.companyName }}</td>
+                  <td class="border border-gray-300 px-4 py-3">{{ item.purpose }}</td>
+                  <td class="border border-gray-300 px-4 py-3">{{ item.transportMode }}</td>
+                  <td class="border border-gray-300 px-4 py-3">{{ item.amount }}</td>
+                  <td class="border border-gray-300 px-4 py-3">
+                    {{ getStatusName(item.currentStatus ?? 0) }}
+                  </td>
+                </tr>
+              }
+            </tbody>
           </table>
+
+          <div class="flex justify-center items-center gap-2 py-6">
+            @for (page of [].constructor(totalPages()); track $index) {
+              <button
+                (click)="changePage($index + 1)"
+                [class.bg-slate-700]="currentPage() === $index + 1"
+                [class.text-white]="currentPage() === $index + 1"
+                class="px-4 py-2 rounded-lg border hover:bg-slate-100"
+              >
+                {{ $index + 1 }}
+              </button>
+            }
+          </div>
         </div>
       </div>
     </div>

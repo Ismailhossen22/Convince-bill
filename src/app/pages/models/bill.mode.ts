@@ -6,8 +6,8 @@ export interface UserInfo {
   contacNo?: string;
   designation?: string;
   submitDate?: string;
-  department?:string;
-  group?:string
+  department?: string;
+  group?: string
 
 }
 
@@ -21,7 +21,7 @@ export interface Bill {
 }
 
 export interface IConvenceBill {
-  visitedDate?: string;
+  visitedDate: string;
   toLocation?: string;
   fromLocation?: string;
   purpose?: string;
@@ -33,11 +33,13 @@ export interface IConvenceBill {
   convID: number;
   userRole?: string | null;
   currentStatus?: number;
-  ctid:number;
-  cP_ID:number;
-  submittedDate:string;
-  name?:string
-  
+  ctid: number;
+  cP_ID: number;
+  submittedDate: string;
+  name?: string;
+  sentBackFromStage: string | null;
+  comments:string
+
 }
 
 export interface IApprovalDetail {
@@ -64,3 +66,18 @@ export enum BillStatus {
   SentToAccountsHead = 9,
   SentToPayment = 10
 }
+
+
+export enum BillStatusName {
+  Rejected = 1,
+  Returned = 2,
+  Draft = 3,
+  PendingSupervisor = 4,
+  PendingAdminExec = 5,
+  PendingTeamHead = 6,
+  PendingAdminHead = 7,
+  PendingAccountsExec = 8,
+  PendingAccountsHead = 9,
+  InPaymentProcess = 10
+}
+

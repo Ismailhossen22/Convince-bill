@@ -40,7 +40,7 @@ export class BillService {
 
     this.http.get<any>(url).subscribe({
       next: (res) => {
-
+        console.log(res)
         const rawData = res?.event?.eventData?.[0]?.value || [];
 
         if (rawData.length === 0) {
@@ -64,6 +64,8 @@ export class BillService {
           ctid: item.ctid || '',
           cP_ID: item.cP_ID || '',
           userRole: item.userRole || null,
+          sentBackFromStage:item.sentBackFromStage||null,
+          comments:item.comments
 
         }));
 
@@ -105,8 +107,16 @@ export class BillService {
   }
 
   AddBillApi(bill: IConvenceBill): Observable<IConvenceBill> {
-    return this.http.post<IConvenceBill>(this.createbillUrl, bill);
+    return this.http.post<IConvenceBill>(this.createbillUrl, bill).pipe(
+
+    );
   }
+
+
+
+
+
+
 
   editBillApi(payload: any): Observable<any> {
     return this.http.put<any>(this.editBillUrl, payload);
@@ -156,13 +166,13 @@ export class BillService {
     if (UID != null) {
       params = params.set('UID', UID.toString());
     }
-    if (UserRole!=null) {
+    if (UserRole != null) {
       params = params.set('UserRole', UserRole);
     }
     if (StatusId != null) {
       params = params.set('StatusId', StatusId.toString());
     }
-   // console.log('Final API URL:', `${url}?${params.toString()}`);
+    // console.log('Final API URL:', `${url}?${params.toString()}`);
     return this.http.get<any>(url, { params });
   }
 
@@ -197,9 +207,22 @@ export class BillService {
     );
   }
 
+  // draftBills = computed(() =>
+  //   this.billSignal().filter((b) =>
+  //     b.items &&
+  //     b.items.length > 0 &&
+  //     b.items.some(item => item.status == BillStatus.Draft)
+  //   )
+  // );
+
   draftBills = computed(() =>
-    this.billSignal().filter((b) => b.items?.length > 0 && b.items[0].status === BillStatus.Draft),
+    this.billSignal().filter((b) =>
+      b.items?.length > 0 &&
+      b.items.some(item => item.status == BillStatus.Draft) 
+    )
   );
+
+
   pendingBills = computed(() =>
     this.billSignal().filter(
       (b) => b.items.length > 0 && b.items[0].status === BillStatus.SentToSupervisor,
@@ -208,7 +231,7 @@ export class BillService {
 
   rejectedBills = computed(() =>
     this.billSignal().filter(
-      (b) => b.items.length > 0 && b.items[0].status === BillStatus.Rejected,
+      (b) => b.items.length > 0 &&   b.items.some(item => item.status == BillStatus.Rejected) 
     ),
   );
 
@@ -241,16 +264,16 @@ export class BillService {
     const userId = this.AuthService.currentUser()?.userId || "";
 
     const body = {
-      convIDs: convIds,           
+      convIDs: convIds,
       currentStatus: currentStatus,
       requestedStatus: requestedStatus,
       comment: comment,
-      actionByUid: userId         
+      actionByUid: userId
     };
 
     return this.http.put(url, body)
-    
-    
+
+
   }
 
   approveBill(convID: number) {
@@ -283,28 +306,26 @@ export class BillService {
     );
   }
 
+
   deleteBill(convID: number, ctid: number) {
     const url = this.deleteBillingUrl;
-
-    const body = {
-      ctid: ctid,
-      convID: convID
-    };
+    const body = { ctid, convID };
 
     return this.http.post(url, body).pipe(
       tap(() => {
-        this.billSignal.update((bills) =>
-          bills.filter((b) => b.items.length > 0 && b.items[0].convID !== convID),
-        );
-        console.log('Signal updated from service');
-      }),
+        this.billSignal.update((bills) => {
+          return bills
+            .map((bill) => ({
+              ...bill,
+
+              items: bill.items.filter((item: any) => item.convID !== convID)
+            }))
+            .filter((bill) => bill.items.length > 0);
+        });
+      })
     );
   }
 
-  // getAllBills(): Bill[] {
-  //   return this.billSignal();
-
-  // }
 
   getUserData(userId: string) {
     return this.http.get<any>(`https://api.example.com/user/${userId}`);

@@ -1,5 +1,5 @@
 import { Component, computed, inject, numberAttribute, signal } from '@angular/core';
-import { Bill, BillStatus, IApprovalDetail, IConvenceBill } from '../../models/bill.mode';
+import { Bill, BillStatus, BillStatusName, IApprovalDetail, IConvenceBill } from '../../models/bill.mode';
 import { BillService } from '../../services/bill.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../features/services/AuthService';
@@ -104,7 +104,7 @@ export class ApprovalHistory {
     });
   }
 
-  statusOptions = Object.entries(BillStatus)
+  statusOptions = Object.entries(BillStatusName)
     .filter(([key, value]) => typeof value === 'number') // শুধু নম্বর ভ্যালুগুলো নিবে
     .map(([key, value]) => ({
       label: key
