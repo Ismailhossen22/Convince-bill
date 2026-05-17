@@ -15,7 +15,7 @@ export const routes: Routes = [
     { path: 'login', loadComponent: () => import('./features/login/login').then(m => m.Login), pathMatch: 'full' },
     // { path: 'home', loadComponent: () => import('./features/home/home').then(m => m.Home), pathMatch: 'full' },
     { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'navbar', component: Sidebar },
+    { path: 'home', component: Sidebar },
     { path: 'create-bill', component: CreateBill },
     { path: 'draft-bills', component: DraftBills },
     { path: 'rejected-bills', component: RejectedBills },

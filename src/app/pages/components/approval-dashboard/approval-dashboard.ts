@@ -4,7 +4,7 @@ import { BillService } from '../../services/bill.service';
 import { Bill, IApprovalDetail, IConvenceBill } from '../../models/bill.mode';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
 import { AuthService } from '../../../features/services/AuthService';
-import { from } from 'rxjs';
+import { from, single } from 'rxjs';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
@@ -103,5 +103,44 @@ export class ApprovalDashboard implements OnInit {
     });
   }
 
-  
+
+  searchtext = signal('');
+
+  filteredBills = computed<IApprovalDetail[]>(() => {
+    let allbill = this.approvebill();
+
+    if (this.searchtext()) {
+      allbill = allbill.filter(item => item.personName?.toLowerCase().includes(this.searchtext().toLowerCase())
+      );
+    }
+
+    return allbill;
+
+  })
+
+  currentPage = signal(1)
+  pageSize = 5;
+
+
+
+  paginatedBills = computed<IApprovalDetail[]>(() => {
+    const start = (this.currentPage() - 1) * this.pageSize;
+    return this.filteredBills().slice(start, start + this.pageSize);
+  });
+
+  totalPage = computed<number>(() =>
+    Math.ceil(this.approvebill().length / this.pageSize)
+  )
+
+  changePage(page: number) {
+    this.currentPage.set(page);
+  }
+
+
+
+
+
+
+
+
 }

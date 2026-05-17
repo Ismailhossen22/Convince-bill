@@ -1,6 +1,6 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { BillService } from '../../services/bill.service';
-import { IConvenceBill } from '../../models/bill.mode';
+import { BillStatus, IConvenceBill } from '../../models/bill.mode';
 import { Router } from '@angular/router';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
 
@@ -41,5 +41,39 @@ export class RejectedBills {
       })
     }
   }
+
+  selectedConvID = signal<number[]>([]);
+
+  submittoSupervisor(convId: number) {
+    this.selectedConvID.update(ids => [...ids, convId])
+    const convIdsArray = this.selectedConvID()
+    const currentStatus = BillStatus.Draft;
+    const nextStatus = BillStatus.SentToAdminExecutive;
+    const comment = '';
+    const actionUId=BillStatus.Draft
+      debugger;
+    this.billService.updateBillStatus(convIdsArray, actionUId, currentStatus, nextStatus, comment, ).subscribe({
+      next: (res) => {
+
+
+
+        this.billService.billSignal.update((bills) => {
+          return bills
+            .map((bill) => ({
+              ...bill,
+
+              items: bill.items.filter((item) => !convIdsArray.includes(item.convID))
+            }))
+
+            .filter((bill) => bill.items.length > 0);
+        });
+      },
+      error: (err) => {
+        console.error('Update failed:', err);
+        alert('Error updating status');
+      }
+    });
+  }
+
 
 }

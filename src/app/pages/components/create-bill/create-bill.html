@@ -161,9 +161,9 @@
                     <ul
                       class="absolute z-50 w-full bg-white border border-gray-400 rounded shadow-xl left-0 top-full mt-1"
                     >
-                      @for (company of suggestions.slice(0, 10); track company) {
+                      @for (company of suggestions.slice(0, 10); track company.comId) {
                         <li
-                          (mousedown)="selectCompany(company.companyName, i)"
+                          (mousedown)="selectCompany(company, i)"
                           class="px-3 py-2 text-sm hover:bg-blue-50 cursor-pointer border-b last:border-none text-left"
                         >
                           {{ company.companyName }}
@@ -205,7 +205,7 @@
                 @if (items.length > 0) {
                   <button
                     (click)="removeRow(i)"
-                    class="text-red-500 hover:text-red-700 transition text-base"
+                    class="cursor-pointer text-red-500 hover:text-red-700 transition text-base"
                   >
                     <img src="images/Trash.svg" />
                   </button>
@@ -232,7 +232,7 @@
     <!-- Add Row -->
     <button
       (click)="addRow()"
-      class="mb-6 px-4 py-2 text-sm bg-gray-500 text-white rounded-lg hover:bg-gray-400 transition"
+      class="cursor-pointer mb-6 px-4 py-2 text-sm bg-gray-500 text-white rounded-lg hover:bg-gray-400 transition"
     >
       + Add Row
     </button>
@@ -242,14 +242,14 @@
       @if (!isEditMode()) {
         <button
           (click)="saveDraft()"
-          class="px-5 py-2 text-sm border bg-[#67AED5] border-gray-400 text-gray-700 rounded-lg hover:bg-[#5aa894] transition"
+          class="cursor-pointer px-5 py-2 text-sm border bg-[#67AED5] border-gray-400 text-gray-700 rounded-lg hover:bg-[#5aa894] transition"
         >
           Save to Draft
         </button>
       } @else {
         <button
           (click)="editBill()"
-          class="px-5 py-2 text-sm border bg-[#67AED5] border-gray-400 text-gray-700 rounded-lg hover:bg-[#5aa894] transition"
+          class="cursor-pointer px-5 py-2 text-sm border bg-[#67AED5] border-gray-400 text-gray-700 rounded-lg hover:bg-[#5aa894] transition"
         >
           update
         </button>
@@ -258,7 +258,7 @@
       <button
         (click)="submitotSupervisor()"
         [disabled]="isEditMode()"
-        class="px-5 py-2 text-sm bg-[#67D5B2] text-white rounded-lg hover:bg-[#5aa894] transition"
+        class="cursor-pointer px-5 py-2 text-sm bg-[#67D5B2] text-white rounded-lg hover:bg-[#5aa894] transition"
       >
         Submit to the Supervisor
       </button>

@@ -95,8 +95,8 @@ export class CreateBill implements OnInit {
       purpose: [''],
       transportMode: [''],
       amount: [0, Validators.required],
-      convID: []
-
+      convID: [],
+      cP_ID: [0],
     });
   }
 
@@ -138,26 +138,7 @@ export class CreateBill implements OnInit {
   }
 
   //  Build bill object — DRY
-  private buildBillPayload(status: BillStatus, index: number = 0): IConvenceBill {
-    const items = this.items.at(index).value;
-    // const convid = this.editingBill()?.convID || this.generateCustomId(5);
-    return {
-      ...items,
-      userId: this.currentUser()?.userId,
-      status: status,
-      userRole: this.currentUser()?.designation,
 
-    };
-  }
-
-  generateCustomId(length: number = 5): string {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-  }
 
 
   //  Save Draft
@@ -166,10 +147,7 @@ export class CreateBill implements OnInit {
       this.bilform.markAllAsTouched();
       return;
     }
-    debugger;
-    const totalAmount = this.items.value.reduce((acc: number, cur: any) => acc + (Number(cur.amount) || 0), 0);
-
-
+    const totalAmount = this.items.value.reduce((acc: number, cur: any) => acc + (Number(cur.amount) || 0), 0)
     this.items.controls.forEach((_, i) => {
       const payload = this.buildBillPayload(BillStatus.Draft, i);
      
@@ -250,6 +228,20 @@ export class CreateBill implements OnInit {
   }
 
 
+  private buildBillPayload(status: BillStatus, index: number = 0): IConvenceBill {
+    const items = this.items.at(index).value;
+
+    return {
+      ...items,
+      userId: this.currentUser()?.userId,
+      status: status,
+      userRole: this.currentUser()?.designation,
+
+    };
+  }
+
+
+
   editBill() {
     debugger;
     if (this.bilform.invalid) {
@@ -266,7 +258,7 @@ export class CreateBill implements OnInit {
         totalAmount: item.amount?.toString(),
         updatedByUID: user?.userId,
         ctid: this.receivedData?.ctid,
-        cP_ID: "",
+        cP_ID: item.cP_ID,
         companyName: item.companyName,
         transportDate: item.visitedDate,
         transportPurpose: item.purpose,
@@ -311,6 +303,7 @@ export class CreateBill implements OnInit {
     ).subscribe({
       next: (data) => {
         this.suggestions = data;
+        console.log(data)
         this.activeDropdownIndex = index;
       },
       error: (err) => {
@@ -321,12 +314,19 @@ export class CreateBill implements OnInit {
   }
 
 
-  selectCompany(name: string, index: number) {
+  selectCompany(company: any, index: number) {
     const itemFormGroup = this.items.at(index) as FormGroup;
-    itemFormGroup.patchValue({ companyName: name }, { emitEvent: false });
+    itemFormGroup.patchValue({
+       companyName: company.companyName,
+       cP_ID:company.comId
+      
+      }, 
+      { emitEvent: false });
 
     this.suggestions = [];
     this.activeDropdownIndex = null;
+    console.log("Selected Company ID (cP_ID):", itemFormGroup.get('cP_ID')?.value);
+
   }
 
   closeDropdown() {

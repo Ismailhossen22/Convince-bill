@@ -109,8 +109,9 @@ export class DraftBills implements OnInit {
     const currentStatus = BillStatus.Draft;
     const nextStatus = BillStatus.SentToAdminExecutive;
     const comment = '';
+    const actionId=BillStatus.Draft
 
-    this.billService.updateBillStatus(convIdsArray, currentStatus, nextStatus, comment).subscribe({
+    this.billService.updateBillStatus(convIdsArray,actionId, currentStatus, nextStatus, comment).subscribe({
       next: (res) => {
        
 

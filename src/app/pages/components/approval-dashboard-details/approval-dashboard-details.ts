@@ -25,6 +25,7 @@ export class ApprovalDashboardDetails {
   selectedBillsForModal = signal<IConvenceBill[]>([]);
 
   ngOnInit() {
+
     this.route.queryParamMap.subscribe(params => {
       const date = params.get('submissionDate');
       const uidParam = params.get('filteredUID');
@@ -140,8 +141,9 @@ export class ApprovalDashboardDetails {
     const convIdsArray = this.selectedConvID();
     const currentStatus = this.pendingtStatus();
     const nextStatus = BillStatus.Rejected;
+    const actionid=BillStatus.SentToAdminHead
     debugger;
-    this.billService.updateBillStatus(convIdsArray, currentStatus, nextStatus, comment).subscribe({
+    this.billService.updateBillStatus(convIdsArray,actionid, currentStatus, nextStatus, comment).subscribe({
       next: (res) => {
         debugger;
         alert('Status updated successfully!');

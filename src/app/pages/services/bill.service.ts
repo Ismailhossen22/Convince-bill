@@ -62,7 +62,7 @@ export class BillService {
           currentStatus: item.currentStatus,
           convID: item.convID || '',
           ctid: item.ctid || '',
-          cP_ID: item.cP_ID || '',
+          cP_ID: item.cP_ID,
           userRole: item.userRole || null,
           sentBackFromStage:item.sentBackFromStage||null,
           comments:item.comments
@@ -259,7 +259,7 @@ export class BillService {
 
 
 
-  updateBillStatus(convIds: number[], currentStatus: number, requestedStatus: number, comment: string = ""): Observable<any> {
+  updateBillStatus(convIds: number[],actionByUid:number,  currentStatus: number, requestedStatus: number, comment: string = "" ): Observable<any> {
     const url = this.UpdateStatusUrl;
     const userId = this.AuthService.currentUser()?.userId || "";
 
@@ -268,7 +268,7 @@ export class BillService {
       currentStatus: currentStatus,
       requestedStatus: requestedStatus,
       comment: comment,
-      actionByUid: userId
+      actionByUid: actionByUid
     };
 
     return this.http.put(url, body)

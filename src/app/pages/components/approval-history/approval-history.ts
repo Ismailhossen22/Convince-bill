@@ -4,12 +4,12 @@ import { BillService } from '../../services/bill.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../features/services/AuthService';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { of } from 'rxjs';
+import { of, single } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-approval-history',
-  imports: [FormsModule, ReactiveFormsModule,DatePipe],
+  imports: [FormsModule, ReactiveFormsModule, DatePipe],
   templateUrl: './approval-history.html',
   styleUrl: './approval-history.css',
 })
@@ -45,7 +45,7 @@ export class ApprovalHistory {
     this.filterForm = this.fb.group({
       fromDate: [fromDateStr],
       toDate: [toDateStr],
-      statusId: [3],
+      statusId: [],
       userRole: [''],
       uid: [],
     });
@@ -67,12 +67,13 @@ export class ApprovalHistory {
           const rawData = messageData.value;
 
           const mappedData: IApprovalDetail[] = rawData.map((item: any) => ({
-            approvalDate: item.approvalDate || null,
+            
             convID: Number(item.convID),
             convOwnerUID: Number(item.convOwnerUID),
             personId: Number(item.personId),
             personName: item.personName || 'Unknown',
             submissionDate: item.submissionDate,
+            approvalDate: item.approvalDate,
             totalAmount: Number(item.totalAmount) || 0,
           }));
 
@@ -111,5 +112,40 @@ export class ApprovalHistory {
       , value: value
     }));
 
+
+  searchText = signal('')
+  selectedStatus = signal<number | null>(null)
+
+  fillteredBill = computed<IApprovalDetail[]>(() => {
+    let allbill = this.approvebill();
+
+    if (this.searchText()) {
+      allbill = allbill.filter(item => item.personName?.toLowerCase().includes(this.searchText().toLowerCase()));
+    }
+
+    // if(this.selectedStatus()!==null){
+    //   allbill=allbill.filter(item=>item.)
+    // }
+
+
+    return allbill
+  })
+
+  currentpage = signal(1)
+  pageSize = 5
+
+
+  paginatedBills = computed<IApprovalDetail[]>(() => {
+
+    const startIndex = (this.currentpage() - 1) * this.pageSize;
+    return this.fillteredBill().slice(startIndex, startIndex + this.pageSize)
+  })
+
+  totalPage = computed<number>(() =>
+    Math.ceil(this.fillteredBill().length / this.pageSize))
+
+  changePage(page: number) {
+    this.currentpage.set(page)
+  }
 
 }

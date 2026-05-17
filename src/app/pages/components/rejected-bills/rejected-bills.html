@@ -48,12 +48,12 @@
                   <td class="px-3 py-2 border border-gray-400">{{ item.comments }}</td>
 
                   <td class="px-3 py-2 border border-gray-400">
-                    <div class="flex">
+                    <div class="flex flex-wrap lg:flex-nowrap justify-between  items-center gap-1">
                       <button (click)="editSingleItem(item)">
                         <img class="h-10 w-10" src="images/Edit.svg" alt="Edit" />
                       </button>
-                      <button (click)="deleteBill(item.convID, item.ctid)">
-                        <img class="h-10 w-10" src="images/Trash.svg" alt="Delete" />
+                      <button class="bg-[#67D5B2] text-white py-1 px-1 rounded-lg" (click)="submittoSupervisor(item.convID)">
+                       submit
                       </button>
                     </div>
                   </td>
@@ -78,14 +78,7 @@
           </tfoot>
         </table>
       </div>
-
-      <div class="flex justify-end gap-3">
-        <button
-          class="px-5 py-2 text-base bg-[#67D5B2] text-white rounded-lg hover:bg-[#5aa891] transition"
-        >
-          Submit to the Supervisor
-        </button>
-      </div>
+      
     </div>
   </div>
 </div>
