@@ -8,14 +8,8 @@ import { WORKFLOW_RULES } from '../models/bill-workflow.config';
 })
 export class BillWorkflowService {
   
-  // মনে করুন এটি আপনার AuthService থেকে আসা কারেন্ট লগইনড ইউজারের রোল
-  // উদাহরণ: 'Supervisor', 'AdminExec', ইত্যাদি
   currentUserRole = signal<string>('Supervisor'); 
-
-  /**
-   * ইউজার এই বিলটি এপ্রুভ বা আপডেট করতে পারবে কি না তা চেক করার গার্ড ফাংশন
-   * @param currentBillStatus বিলটির বর্তমান স্ট্যাটাস (database status)
-   */
+ 
   canUserApprove(currentBillStatus: BillStatusName): boolean {
     const role = this.currentUserRole();
     const rule = WORKFLOW_RULES[role];

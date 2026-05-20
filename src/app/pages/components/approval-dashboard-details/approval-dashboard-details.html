@@ -9,33 +9,33 @@
     <div class="flex items-center justify-center mb-4">
       <div class="border border-gray-500 rounded-lg overflow-hidden w-3/6">
         @if (CurrentUsr(); as user) {
-          <table class="w-full text-sm">
-            <tbody class="divide-y divide-gray-500 text-center text-gray-900 text-base/8">
-              <tr>
-                <td class="px-4 py-3 font-medium w-1/2">Employee Name</td>
-                <td class="px-4 py-3 text-gray-800 border-l border-gray-500">{{ user.name }}</td>
-              </tr>
+        <table class="w-full text-sm">
+          <tbody class="divide-y divide-gray-500 text-center text-gray-900 text-base/8">
+            <tr>
+              <td class="px-4 py-3 font-medium w-1/2">Employee Name</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-500">{{ user.name }}</td>
+            </tr>
 
-              <tr>
-                <td class="px-4 py-3 font-medium">Designation</td>
-                <td class="px-4 py-3 text-gray-800 border-l border-gray-500">
-                  {{ user.designation }}
-                </td>
-              </tr>
+            <tr>
+              <td class="px-4 py-3 font-medium">Designation</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-500">
+                {{ user.designation }}
+              </td>
+            </tr>
 
-              <tr>
-                <td class="px-4 py-3 font-medium">Department</td>
-                <td class="px-4 py-3 text-gray-800 border-l border-gray-500">
-                  {{ user.department }}
-                </td>
-              </tr>
+            <tr>
+              <td class="px-4 py-3 font-medium">Department</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-500">
+                {{ user.department }}
+              </td>
+            </tr>
 
-              <tr>
-                <td class="px-4 py-3 font-medium">Group</td>
-                <td class="px-4 py-3 text-gray-800 border-l border-gray-500">{{ user.group }}</td>
-              </tr>
-            </tbody>
-          </table>
+            <tr>
+              <td class="px-4 py-3 font-medium">Group</td>
+              <td class="px-4 py-3 text-gray-800 border-l border-gray-500">{{ user.group }}</td>
+            </tr>
+          </tbody>
+        </table>
         }
       </div>
     </div>
@@ -50,14 +50,10 @@
                 <th class="border border-gray-800 px-2 py-3 w-28">Visited Date</th>
                 <th class="border border-gray-800 px-2 py-3 w-32">
                   <div class="flex items-center justify-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      class="w-4 h-4 accent-green-600"
-                      (change)="toggleSelectAll($event)"
+                    <input type="checkbox" class="w-4 h-4 accent-green-600" (change)="toggleSelectAll($event)"
                       [checked]="
                         selectedConvID().length > 0 && selectedConvID().length == totalItemsCount()
-                      "
-                    />
+                      " />
                     <span>Select All</span>
                   </div>
                 </th>
@@ -75,80 +71,64 @@
             <tbody>
               <!-- Outer Loop: প্রতিটি তারিখের গ্রুপের জন্য (Bill অবজেক্ট) -->
               @for (bill of filteredApprovedBills(); track $index) {
-                <!-- Inner Loop: ওই তারিখের প্রতিটি আইটেমের জন্য (IConvenceBill) -->
-                @for (item of bill.items; track item.convID; let i = $index) {
-                  <tr class="hover:bg-gray-50">
-                    <!-- Visited Date Column: শুধুমাত্র প্রথম রো-তে rowspan হবে -->
-                    @if (i === 0) {
-                      <td
-                        [attr.rowspan]="bill.items.length + 1"
-                        class="border border-gray-800 px-2 py-2 font-semibold align-top bg-white"
-                      >
-                        {{ item.visitedDate ?? '' | shortDate }}
-                      </td>
-                    }
-
-                    <td class="border border-gray-800 px-2 py-2 text-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        class="w-4 h-4 accent-green-600"
-                        [checked]="isIdSelected(item.convID)"
-                        (change)="onCheckboxChange(item.convID, $event)"
-                      />
-                    </td>
-
-                    <!-- Content Columns -->
-                    <td class="border border-gray-800 px-2 py-2 text-left">
-                      {{ item.fromLocation }}
-                    </td>
-                    <td class="border border-gray-800 px-2 py-2 text-left">
-                      {{ item.toLocation }}
-                    </td>
-                    <td class="border border-gray-800 px-2 py-2">{{ item.companyName }}</td>
-                    <td class="border border-gray-800 px-2 py-2">{{ item.purpose }}</td>
-                    <td class="border border-gray-800 px-2 py-2">{{ item.transportMode }}</td>
-                    <td class="border border-gray-800 px-2 py-2">{{ item.amount }}</td>
-
-                    @if (i === 0) {
-                      <td
-                        [attr.rowspan]="bill.items.length + 1"
-                        class="border border-gray-800 px-2 py-2 font-bold text-center bg-white"
-                      >
-                        {{ bill.subtotal }}
-                      </td>
-                    }
-                    <td class="border border-gray-800 px-2 py-2">
-                      <button
-                        (click)="processStatusUpdate(item.currentStatus ?? 0)"
-                        class="min-w-30 bg-red-400 hover:bg-red-500 text-white py-2 rounded-lg flex items-center font-semibold shadow-md"
-                      >
-                        <img src="images/Cancel.svg" class="h-8" />
-                        <span>Reject</span>
-                      </button>
-                    </td>
-                  </tr>
+              <!-- Inner Loop: ওই তারিখের প্রতিটি আইটেমের জন্য (IConvenceBill) -->
+              @for (item of bill.items; track item.convID; let i = $index) {
+              <tr class="hover:bg-gray-50">
+                <!-- Visited Date Column: শুধুমাত্র প্রথম রো-তে rowspan হবে -->
+                @if (i === 0) {
+                <td [attr.rowspan]="bill.items.length + 1"
+                  class="border border-gray-800 px-2 py-2 font-semibold align-top bg-white">
+                  {{ item.visitedDate | shortDate }}
+                </td>
                 }
 
-                <tr class="bg-white">
-                  <td
-                    colspan="6"
-                    class="border border-gray-800 px-2 py-1 font-bold text-center italic"
-                  >
-                    Sub Total=
-                  </td>
+                <td class="border border-gray-800 px-2 py-2 text-center cursor-pointer">
+                  <input type="checkbox" class="w-4 h-4 accent-green-600" [checked]="isIdSelected(item.convID)"
+                    (change)="onCheckboxChange(item.convID, $event)" />
+                </td>
 
-                  <td class="border border-gray-800 px-2 py-1 font-bold">{{ bill.subtotal }}</td>
-                </tr>
+                <!-- Content Columns -->
+                <td class="border border-gray-800 px-2 py-2 text-left">
+                  {{ item.fromLocation }}
+                </td>
+                <td class="border border-gray-800 px-2 py-2 text-left">
+                  {{ item.toLocation }}
+                </td>
+                <td class="border border-gray-800 px-2 py-2">{{ item.companyName }}</td>
+                <td class="border border-gray-800 px-2 py-2">{{ item.purpose }}</td>
+                <td class="border border-gray-800 px-2 py-2">{{ item.transportMode }}</td>
+                <td class="border border-gray-800 px-2 py-2">{{ item.amount }}</td>
+
+                @if (i === 0) {
+                <td [attr.rowspan]="bill.items.length + 1"
+                  class="border border-gray-800 px-2 py-2 font-bold text-center bg-white">
+                  {{ bill.subtotal }}
+                </td>
+                }
+                <td class="border border-gray-800 px-2 py-2">
+                  <button (click)="processStatusUpdate(item.currentStatus ?? 0)"
+                    class="min-w-30 bg-red-400 hover:bg-red-500 text-white py-2 rounded-lg flex items-center font-semibold shadow-md">
+                    <img src="images/Cancel.svg" class="h-8" />
+                    <span>Reject</span>
+                  </button>
+                </td>
+              </tr>
+              }
+
+              <tr class="bg-white">
+                <td colspan="6" class="border border-gray-800 px-2 py-1 font-bold text-center italic">
+                  Sub Total=
+                </td>
+
+                <td class="border border-gray-800 px-2 py-1 font-bold">{{ bill.subtotal }}</td>
+              </tr>
               }
             </tbody>
 
             <!-- Table Footer: Grand Total -->
             <tfoot>
               <tr class="bg-white">
-                <td
-                  colspan="8"
-                  class="border border-gray-800 px-2 py-2 font-bold text-center italic"
-                >
+                <td colspan="8" class="border border-gray-800 px-2 py-2 font-bold text-center italic">
                   Grand Total=
                 </td>
                 <td class="border border-gray-800 px-2 py-2 font-bold text-center text-blue-600">
@@ -158,10 +138,13 @@
             </tfoot>
           </table>
 
-          <div class="flex justify-center gap-4 mt-7 text-lg">
-            <button
-              class="min-w-48 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg flex items-center justify-around gap-2 font-semibold shadow-md"
-            >
+          <div class="flex justify-center gap-2 mt-7 text-lg">
+            <button [disabled]="isActionAllowed" (click)="approveBill()" [ngClass]="
+                isActionAllowed
+                  ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              " type="button"
+              class="cursor-pointer min-w-40 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg flex items-center justify-around font-semibold shadow-md">
               <img src="images/Approval.svg" class="h-8" /> Approve
             </button>
           </div>
@@ -268,11 +251,7 @@
   </div>
 </div>
 @if (isRejectModalOpen()) {
-  <app-comment
-    [selectedBills]="selectedBillsForModal()"
-    (close)="isRejectModalOpen.set(false)"
-    (submit)="handleFinalStatusUpdate($event)"
-  >
-  </app-comment>
+<app-comment [selectedBills]="selectedBillsForModal()" (close)="isRejectModalOpen.set(false)"
+  (submit)="handleFinalStatusUpdate($event)">
+</app-comment>
 }
-

@@ -48,7 +48,7 @@ export class Login {
 
           this.authService.setUser(authenticatedUser)
 
-          this.router.navigate(['/navbar']);
+          this.router.navigate(['/home']);
         } else {
 
           alert("Wrong UserId or password!");

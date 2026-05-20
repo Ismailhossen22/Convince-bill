@@ -1,14 +1,18 @@
 import { Component, computed, Inject, inject, signal } from '@angular/core';
-import { Bill, BillStatus, IConvenceBill } from '../../models/bill.mode';
+import { Bill, BillStatus, BillStatusName, IConvenceBill } from '../../models/bill.mode';
 import { AuthService } from '../../../features/services/AuthService';
 import { BillService } from '../../services/bill.service';
 import { ShortDatePipe } from '../../pipes/short-data.pipe';
 import { ActivatedRoute } from '@angular/router';
 import { Comment } from "../comment/comment";
+import { BillWorkflowService } from '../../services/bill-workflow.service';
+import { CommonModule } from '@angular/common';
+import { combineLatestWith } from 'rxjs';
+
 
 @Component({
   selector: 'app-approval-dashboard-details',
-  imports: [ShortDatePipe, Comment],
+  imports: [ShortDatePipe, Comment, CommonModule],
   templateUrl: './approval-dashboard-details.html',
   styleUrl: './approval-dashboard-details.css',
 })
@@ -23,6 +27,7 @@ export class ApprovalDashboardDetails {
   selectedConvID = signal<number[]>([]);
   isRejectModalOpen = signal<boolean>(false);
   selectedBillsForModal = signal<IConvenceBill[]>([]);
+  private workflowService = inject(BillWorkflowService)
 
   ngOnInit() {
 
@@ -30,6 +35,7 @@ export class ApprovalDashboardDetails {
       const date = params.get('submissionDate');
       const uidParam = params.get('filteredUID');
       const uid = uidParam ? Number(uidParam) : undefined;
+
 
       debugger;
       if (date !== null) {
@@ -114,17 +120,28 @@ export class ApprovalDashboardDetails {
     return this.billSignal().reduce((count, bill) => count + bill.items.length, 0);
   });
 
+
+
+
   pendingtStatus = signal<number>(0);
 
   processStatusUpdate(currentStatus: number,) {
-    debugger;
+
+
+
     const slectedconvId = this.selectedConvID();
     if (slectedconvId.length === 0) {
       alert("Please select at least one bill!");
       return;
     }
+
     if (slectedconvId.length > 1) {
       alert("Please select only one bill at a time!");
+      return;
+    }
+
+    if (!this.isActionAllowed) {
+      alert("You are not permit bill approve")
       return;
     }
 
@@ -136,14 +153,21 @@ export class ApprovalDashboardDetails {
 
   }
 
+  get isActionAllowed(): boolean {
+    return this.workflowService.canUserApprove(this.pendingtStatus())
+  }
+
+
   handleFinalStatusUpdate(comment: string) {
+
+    // const nextStatuss=this.workflowService.getNextStatus(this.pendingtStatus())
     debugger;
     const convIdsArray = this.selectedConvID();
     const currentStatus = this.pendingtStatus();
     const nextStatus = BillStatus.Rejected;
-    const actionid=BillStatus.SentToAdminHead
+    const actionid = BillStatus.SentToAdminHead
     debugger;
-    this.billService.updateBillStatus(convIdsArray,actionid, currentStatus, nextStatus, comment).subscribe({
+    this.billService.updateBillStatus(convIdsArray, actionid, currentStatus, nextStatus, comment).subscribe({
       next: (res) => {
         debugger;
         alert('Status updated successfully!');
@@ -158,6 +182,45 @@ export class ApprovalDashboardDetails {
     });
   }
 
+
+  approveBill() {
+    debugger;
+
+    if (!this.isActionAllowed) {
+      alert('you are not permition bill approve')
+      return;
+    }
+
+    const nextStatusId = this.workflowService.getNextStatus(this.pendingtStatus())
+    if (nextStatusId) {
+
+      console.log(`Sending update to backend. New Status ID: ${nextStatusId}`);
+      const convIdsArray = this.selectedConvID();
+      const currentStatus = this.pendingtStatus();
+      const nextStatus = nextStatusId;
+      const actionid = BillStatus.SentToAdminHead
+
+      this.billService.updateBillStatus(convIdsArray, actionid, currentStatus, nextStatus,).subscribe({
+        next: (res) => {
+          debugger;
+          console.log("bill update Successfull");
+          this.selectedConvID.set([]);
+          // this.loadApprovalDetails();  
+        },
+        error: (err) => {
+          console.error('Update failed:', err);
+          alert('Error updating status');
+        }
+      });
+
+
+
+
+
+
+
+    }
+  }
 
 
   onCheckboxChange(convID: number, event: any) {
