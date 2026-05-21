@@ -1,10 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BillService } from '../../services/bill.service';
-import { Bill, IApprovalDetail, IConvenceBill } from '../../models/bill.mode';
-import { ShortDatePipe } from '../../pipes/short-data.pipe';
+import { Bill, IApprovalDetail } from '../../models/bill.mode';
 import { AuthService } from '../../../features/services/AuthService';
-import { from, single } from 'rxjs';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
@@ -19,8 +17,6 @@ export class ApprovalDashboard implements OnInit {
   private readonly AuthService = inject(AuthService);
   private router = inject(Router);
   selectedDate = signal<string>('');
-  draftBills = this.billService.draftBills;
-
   private fb = inject(FormBuilder);
   billSignal = signal<Bill[]>([]);
   approvebill = signal<IApprovalDetail[]>([]);
@@ -45,8 +41,8 @@ export class ApprovalDashboard implements OnInit {
     this.filterForm = this.fb.group({
       fromDate: [fromDateStr],
       toDate: [toDateStr],
-      statusId: [3],
-      userRole: [''],
+      statusId: [6],
+      userRole: ['admin'],
       uid: [],
     });
     this.loadApproval();
@@ -90,9 +86,7 @@ export class ApprovalDashboard implements OnInit {
     });
   }
 
-  calculateTotalAmount = computed(() =>
-    this.draftBills().reduce((sum, bill) => sum + (bill.totalAmount ?? 0), 0),
-  );
+  
 
   goToDetails(date: string, uid: number) {
     debugger;

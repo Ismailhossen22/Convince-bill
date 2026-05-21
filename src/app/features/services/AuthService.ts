@@ -1,6 +1,8 @@
 import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { UserInfo } from '../../pages/models/bill.mode';
+import { UserInfo } from '../models/user.model';
+import { Router } from '@angular/router';
+
 
 @Injectable({
     providedIn: 'root'
@@ -9,7 +11,7 @@ export class AuthService {
     private platformId = inject(PLATFORM_ID);
 
     currentUser = signal<UserInfo | null>(null);
-
+    private router=inject(Router)
     constructor() {
         this.loadUserOnStartup();
     }
@@ -39,10 +41,12 @@ export class AuthService {
     }
 
     clearUser() {
+        debugger;
         if (isPlatformBrowser(this.platformId)) {
             localStorage.removeItem('user_data');
         }
 
         this.currentUser.set(null);
+        this.router.navigate(['/login'])
     }
 }

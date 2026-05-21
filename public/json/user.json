@@ -7,7 +7,8 @@
         "designation": "Employee",
         "submitDate": "2024-05-10",
         "department": "IT",
-        "group": "A"
+        "group": "A",
+         "role":"Employee"
     },
     {
         "userId": 103,
@@ -17,17 +18,19 @@
         "designation": "Employee",
         "submitDate": "2024-05-08",
         "department": "IT",
-        "group": "B"
+        "group": "B",
+         "role":"Supervisor"
     },
     {
         "userId": 104,
-        "password": "327",
+        "password": "325",
         "name": "Sultana Razia",
         "contacNo": "01511000003",
         "designation": "Employeer",
         "submitDate": "2024-05-10",
         "department": "Sales",
-        "group": "A"
+        "group": "A",
+         "role":"AdminExec"
     },
     {
         "userId": 105,
@@ -37,7 +40,8 @@
         "designation": "Supervisor",
         "submitDate": "2024-05-09",
         "department": "Sales",
-        "group": "B"
+        "group": "B",
+         "role":"TeamHead"
     },
     {
         "userId": 106,
@@ -47,7 +51,8 @@
         "designation": "Admin Excutive",
         "submitDate": "2024-05-09",
         "department": "Sales",
-        "group": "B"
+        "group": "B",
+         "role":"AdminHead"
     },
     {
         "userId": 107,
@@ -57,7 +62,8 @@
         "designation": "Team Head",
         "submitDate": "2024-05-09",
         "department": "Sales",
-        "group": "B"
+        "group": "B",
+         "role":"AccountsExec"
     },
     {
         "userId": 108,
@@ -67,7 +73,8 @@
         "designation": "Admin Head",
         "submitDate": "2024-05-09",
         "department": "Sales",
-        "group": "B"
+        "group": "B",
+         "role":"AccountsHead"
     },
     {
         "userId": 109,
@@ -77,7 +84,8 @@
         "designation": "Accounts Executive",
         "submitDate": "2024-05-09",
         "department": "Sales",
-        "group": "B"
+        "group": "B",
+         "role":"Employee"
     },
     {
         "userId": 110,
@@ -87,6 +95,7 @@
         "designation": "Accounts Head",
         "submitDate": "2024-05-09",
         "department": "Sales",
-        "group": "B"
+        "group": "B",
+         "role":"Employee"
     }
 ]

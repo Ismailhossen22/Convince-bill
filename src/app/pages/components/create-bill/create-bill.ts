@@ -1,4 +1,4 @@
-import { BillStatus, IConvenceBill, UserInfo } from './../../models/bill.mode';
+import { BillStatus, IConvenceBill, } from './../../models/bill.mode';
 import { Component, computed, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BillService } from '../../services/bill.service';
@@ -8,6 +8,7 @@ import { ShortDatePipe } from '../../pipes/short-data.pipe';
 import { debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { AuthService } from '../../../features/services/AuthService';
 import { SuccessPage } from "../success-page/success-page";
+import { UserInfo } from '../../../features/models/user.model';
 
 
 
@@ -137,9 +138,7 @@ export class CreateBill implements OnInit {
     }
   }
 
-  //  Build bill object — DRY
-
-
+  
 
   //  Save Draft
   saveDraft(): void {

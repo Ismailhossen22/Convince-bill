@@ -9,6 +9,7 @@ import { ApprovalHistory } from './pages/components/approval-history/approval-hi
 import { SuccessPage } from './pages/components/success-page/success-page';
 import { MonthlyReport } from './pages/components/monthly-report/monthly-report';
 import { ApprovalDashboardDetails } from './pages/components/approval-dashboard-details/approval-dashboard-details';
+import { approvalGuard } from './features/guards/auth.guard';
 
 
 export const routes: Routes = [
@@ -20,14 +21,25 @@ export const routes: Routes = [
     { path: 'draft-bills', component: DraftBills },
     { path: 'rejected-bills', component: RejectedBills },
     { path: 'bill-tracking', component: BillTracking },
-    { path: 'approval-dashboard', component: ApprovalDashboard },
-    { path: 'approval-details', component: ApprovalDashboardDetails },
-    { path: 'approval-history', component: ApprovalHistory },
-    { path: 'monthly-report', component: MonthlyReport },
-    { path: 'success', component: SuccessPage },
     {
-        path: 'comment', loadComponent: () => import('./pages/components/comment/comment').then(m => m.Comment), pathMatch: 'full'
-
+        path: 'approval-dashboard',
+        component: ApprovalDashboard,
+        canActivate: [approvalGuard]
+    },
+    {
+        path: 'approval-details',
+        component: ApprovalDashboardDetails,
+        canActivate: [approvalGuard]
+    },
+    {
+        path: 'approval-history',
+        component: ApprovalHistory,
+       
+    },
+    {
+        path: 'monthly-report',
+        component: MonthlyReport,
+        canActivate: [approvalGuard]
     },
     { path: '**', redirectTo: 'login', pathMatch: 'full' },
 

@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserInfo } from '../../pages/models/bill.mode';
+
 import { HttpClient } from '@angular/common/http';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../services/AuthService';
+import { UserInfo } from '../models/user.model';
 
 @Component({
   selector: 'app-login',

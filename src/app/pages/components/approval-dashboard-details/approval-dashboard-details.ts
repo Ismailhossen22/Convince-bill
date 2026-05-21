@@ -8,6 +8,7 @@ import { Comment } from "../comment/comment";
 import { BillWorkflowService } from '../../services/bill-workflow.service';
 import { CommonModule } from '@angular/common';
 import { combineLatestWith } from 'rxjs';
+import { ROLE_STATUS_MAP } from '../../models/bill-workflow.config';
 
 
 @Component({
@@ -123,7 +124,7 @@ export class ApprovalDashboardDetails {
 
 
 
-  pendingtStatus = signal<number>(0);
+  pendingtStatus = signal<number>(5);
 
   processStatusUpdate(currentStatus: number,) {
 
@@ -153,19 +154,14 @@ export class ApprovalDashboardDetails {
 
   }
 
-  get isActionAllowed(): boolean {
-    return this.workflowService.canUserApprove(this.pendingtStatus())
-  }
-
 
   handleFinalStatusUpdate(comment: string) {
 
-    // const nextStatuss=this.workflowService.getNextStatus(this.pendingtStatus())
     debugger;
     const convIdsArray = this.selectedConvID();
     const currentStatus = this.pendingtStatus();
-    const nextStatus = BillStatus.Rejected;
-    const actionid = BillStatus.SentToAdminHead
+    const nextStatus = BillStatusName.Rejected;
+    const actionid = BillStatusName.PendingAccountsHead;
     debugger;
     this.billService.updateBillStatus(convIdsArray, actionid, currentStatus, nextStatus, comment).subscribe({
       next: (res) => {
@@ -182,6 +178,18 @@ export class ApprovalDashboardDetails {
     });
   }
 
+  userRole = computed(() => this.AuthService.currentUser()?.role||'');
+  userAllowedStatusId = computed(() => {
+    const roleName = this.userRole();
+
+    return ROLE_STATUS_MAP[roleName] || BillStatusName.Draft;
+  });
+
+  get isActionAllowed(): boolean {
+     const role=this.userRole();
+   
+    return this.workflowService.canUserApprove(role, this.userAllowedStatusId())
+  }
 
   approveBill() {
     debugger;
@@ -191,19 +199,19 @@ export class ApprovalDashboardDetails {
       return;
     }
 
-    const nextStatusId = this.workflowService.getNextStatus(this.pendingtStatus())
+    const nextStatusId = this.workflowService.getNextStatus(this.userRole(), this.userAllowedStatusId())
     if (nextStatusId) {
 
       console.log(`Sending update to backend. New Status ID: ${nextStatusId}`);
       const convIdsArray = this.selectedConvID();
-      const currentStatus = this.pendingtStatus();
+      const currentStatus = this.userAllowedStatusId();
       const nextStatus = nextStatusId;
-      const actionid = BillStatus.SentToAdminHead
+      const actionid = this.userAllowedStatusId();
 
       this.billService.updateBillStatus(convIdsArray, actionid, currentStatus, nextStatus,).subscribe({
         next: (res) => {
           debugger;
-          console.log("bill update Successfull");
+          console.log("bill update Successfull",res);
           this.selectedConvID.set([]);
           // this.loadApprovalDetails();  
         },
